@@ -13,8 +13,7 @@ class Fonts:
         self.font_times_new_roman = self.get_fonts_system('times new roman', 25, True, False)
         self.font_colibri = self.get_fonts_system('calibri', 30, False, False)
 
-    def get_fonts_system(self, name: str = 'consolas', size: int = 12, 
-                         bold: bool = False, italic: bool = False) -> pygame.font.Font:
+    def get_fonts_system(self, name: str = 'consolas', size: int = 12, bold: bool = False, italic: bool = False):
 
         key = (name, size, bold, italic)
 

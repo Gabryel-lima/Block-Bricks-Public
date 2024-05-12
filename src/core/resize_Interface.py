@@ -2,17 +2,13 @@
 
 import pygame
 
-from src.core.setings import ConfigVars
-
-
 
 class ResizeInterface:
-    def __init__(self, game_base: object):
+    def __init__(self, game_base):
         self.game_base = game_base
-        self.settings = ConfigVars(self.game_base)
-        self.original_resolution = (self.game_base.resolution_base[0], self.game_base.resolution_base[1])
-
-    def for_dimenssoes_tela(self, nova_res: tuple, res_original: tuple):
+        self.original_resolution = (self.game_base.width, self.game_base.height)
+        
+    def for_dimenssoes_tela(self, nova_res:tuple, res_original:tuple): 
         nova = nova_res
         original = res_original
         for borda in self.game_base.dimension_list_screen:
@@ -23,26 +19,58 @@ class ResizeInterface:
             borda.y = borda_copy.y * y_ratio
             borda.width = borda_copy.width * x_ratio
             borda.height = borda_copy.height * y_ratio
-        # self.game_base.width = borda.width
-        # self.game_base.height = borda.height
+        self.game_base.largura = borda.width
+        self.game_base.altura = borda.height
 
+    def for_tela_inicial(self, nova_res:tuple, res_original:tuple):
+        nova = nova_res
+        original = res_original
+        for tela in self.game_base.list_tela_inicial:
+            tela_copy = tela.copy()
+            x_ratio = nova[0] / original[0] 
+            y_ratio = nova[1] / original[1]
+            tela.x = tela_copy.x * x_ratio
+            tela.y = tela_copy.y * y_ratio
+            tela.width = tela_copy.width
+            tela.height = tela_copy.height
 
-    # Add aqui metodo referente ao cálculo e mudança de escala na tela e dimenssões dos objetos, dentro a área do game. Junto ao stings
+    def for_pre_pos_start(self, nova_res:tuple, res_original:tuple):
+        nova = nova_res
+        original = res_original
+        for start in self.game_base.list_pre_pos_start:
+            start_copy = start.copy()
+            x_ratio = nova[0] / original[0] 
+            y_ratio = nova[1] / original[1]
+            start.x = start_copy.x * x_ratio 
+            start.y = start_copy.y * y_ratio
 
+    def for_tela_config(self, nova_res:tuple, res_original:tuple):
+        nova = nova_res
+        original = res_original
+        for config in self.game_base.list_tela_config:
+            config_copy = config.copy()
+            x_ratio = nova[0] / original[0] 
+            y_ratio = nova[1] / original[1]
+            config.x = config_copy.x * x_ratio 
+            config.y = config_copy.y * y_ratio 
+            config.width = config_copy.width * x_ratio
+            config.height = config_copy.height * y_ratio
     
-    def calculo_obter_proporcao(self, nova_resolucao: tuple):
-        ### Atenção!
+    def calculo_obter_proporcao(self, nova_resolucao:tuple):
         nova_res = nova_resolucao
         res_original = self.original_resolution
         
         if nova_res == res_original:
-            #self.settings._create_vars_tela_inicial()
-            self.settings._create_vars_tela_config()
-            self.settings._create_vars_pre_pos_start()
-        
-        self.for_dimenssoes_tela(nova_res=nova_res, res_original=res_original)
-        self.settings._modifica_vars_tela_inicial = 2
-        # self.settings.list_tela_config[1] = pygame.Rect(0, 0, 0, 0)
+            self.game_base.vars_screen_dimensions()
+            self.game_base.vars_tela_inicial()
+            self.game_base.vars_tela_config()
+            self.game_base.vars_pre_pos_start()
+        else:
+            self.for_dimenssoes_tela(nova_res=nova_res, res_original=res_original)
+            self.for_tela_inicial(nova_res=nova_res, res_original=res_original)
+            self.for_pre_pos_start(nova_res=nova_res, res_original=res_original)
+            self.for_tela_config(nova_res=nova_res, res_original=res_original)
+            self.game_base.list_tela_config[1] = pygame.Rect(0, 0, 0, 0)
 
     def calculo_obter_proporcao_blocos(self, nova_resolucao=tuple):
         nova_res = nova_resolucao 
