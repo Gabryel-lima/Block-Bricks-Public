@@ -7,7 +7,7 @@ from src.core.player_base import PlayerBase
 
 
 class Player2(PlayerBase):
-    def __init__(self, game_base: object):
+    def __init__(self, game_base):
         super().__init__(game_base)
 
     def desenho_player(self):

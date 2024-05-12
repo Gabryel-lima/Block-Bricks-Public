@@ -7,29 +7,44 @@ import random
 import pygame
 
 
-# from data.bot_ia import ColetaDados
+from src.data.coleta_dados import ColetaDados
 
 class Ball:
-    def __init__(self, game_base: object):
+    def __init__(self, game_base):
         self.game_base = game_base
-        # self.coleta = ColetaDados()
-        #self.vetor = Vector2()
-        self.angle = 0.0
-        self.vf_x = 0.0
-        self.vf_y = 0.0
+        self.coleta = ColetaDados(game_base=self.game_base)
         self.x = 300
         self.y = 350
         self.VPos_x = 0.0
         self.VPos_y = 0.0
         self.raio = 5
-        self.bola_Rect = pygame.Rect(self.x - self.raio, self.y - self.raio, self.raio, self.raio)
+        self._left = float(self.x - self.raio)
+        self._top = float(self.y - self.raio)
+        self.bola_Rect = pygame.Rect(self._left, self._top, self.raio, self.raio)
 
     def desenho_bola(self):
         pygame.draw.circle(self.game_base.screen, (255, 255, 255), (self.x, self.y), self.raio)
-
+    
     def iniciar_movimento(self):
-        self.VPos_x = random.uniform(-3.0, 3.0)  # random.uniform(-3.0,3.0)
-        self.VPos_y = random.uniform(-2.0, -2.5)  # random.uniform(-2.0,-2.5)
+        self.VPos_x = random.uniform(-3.0,3.0)  # random.uniform(-3.0,3.0)
+        self.VPos_y = random.uniform(-2.0,-2.0)  # random.uniform(-2.0,-2.0)
+
+    def _save_data(self):
+        angle_xp = self.coleta._data_angle_ball_x_to_player_x(ball_rect_x=self.bola_Rect.centerx, player_rect_x=self.game_base.player.rect.centerx)
+        angle_yp = self.coleta._data_angle_ball_y_to_player_y(ball_rect_y=self.bola_Rect.centery, player_rect_y=self.game_base.player.rect.centery)
+        magnitude = self.coleta._data_magnitude_ball_to_critic_zone(ball_rect_x=self.bola_Rect.centerx, ball_rect_y=self.bola_Rect.centery)
+        distance = self.coleta._data_ball_distance_to_player(ball_rect_centerx=self.bola_Rect.centerx, player_rect_centerx=self.game_base.player.rect.centerx)
+        count_reinits = self.coleta._recebe_count_reinits_decorator()
+        level = self.coleta._recebe_nivel()
+        points = self.coleta._recebe_points()
+        self.coleta.coletar_dados(ang_ball_centerx_to_player_centerx=angle_xp, 
+                                  ang_ball_y_to_player_centery=angle_yp,
+                                  magnitude_ball_center_xy=magnitude,
+                                  distance_ball_centerx_to_player_centerx=distance,
+                                  count_reinits=count_reinits,
+                                  level=level,
+                                  points=points)
+        self.coleta.salvar_dados()
 
     def atualizar(self):
         self.x += self.VPos_x
@@ -46,7 +61,7 @@ class Ball:
 
             self.VPos_y /= 1  # Adicionei para resetar a atualização constante ao tocar na border
 
-        # self.registrar_dados()
+        #self._save_data()
 
     def inverter_direcao(self):
         if pygame.key.get_pressed()[pygame.constants.K_a]:
@@ -58,16 +73,6 @@ class Ball:
         else:
             self.VPos_x *= 1
             self.VPos_y *= -1
-
-        # self.registrar_dados()
-
-    """ def registrar_dados(self):
-        self.angle = self.vetor.angle_to([self.VPos_x, self.VPos_y])
-        self.angle = round(self.angle, 2)
-        self.coleta.coletar_dados(pos_x=self.x, pos_y=self.y, ang=self.angle)
-        self.coleta.salva_dados()
-        
-        self.coleta.salva_dados() """
 
     def inverter_direcao2(self):
         if pygame.key.get_pressed()[pygame.constants.K_LEFT]:
