@@ -1,45 +1,54 @@
-# Block-Bricks
+# Block-Bricks (Almost an Arkanoid)
 
-![Block-Bricks Banner](assets/logo.png)
+Welcome to Block-Bricks, a Python recreation of the classic game Arkanoid, where a player must interact with a ball and blocks to complete levels. This project explores the integration of machine learning techniques, particularly reinforcement learning and evolutionary strategies, to optimize gameplay.
 
-## Description
+## Features
 
-Block-Bricks is a 2D puzzle game implemented in Python using Pygame. It draws inspiration from classic 2D block games, challenging players to clear the board by eliminating groups of blocks. Have fun and test your puzzle-solving skills in this addictive game!
+- Recreated game in Python.
+- Custom reinforcement learning environment (`CustomPyEnvironment`).
+- Evolutionary agent (`EvolutionaryAgent`) for learning and optimizing game interactions.
 
-## Screenshots
+## Game Backend
 
-![](/assets/init.png)
+The game backend includes logic for controlling the paddle, ball dynamics, collision detection, and interaction with blocks. This was customized to support the application of reinforcement learning, allowing an agent to learn how to play the game autonomously. The game state is represented as normalized frames, allowing easy use for ML models.
 
-![](/assets/game.png) 
+## Documentation and Related Projects
 
-![](/assets/in-game.png) 
+For more detailed information about specific components of the project, check out the following:
 
-![](/assets/game-over.png) 
+- [Block-Bricks Detailed Documentation](./Block-Bricks.md): This document provides an in-depth explanation of the game's backend, its mechanics, and the different strategies used to enhance gameplay.
+- [Evolutionary Agent Documentation](./EvolutionaryAgent.md): Detailed information about the implementation of the Evolutionary Agent used in this project, including how it enhances reinforcement learning performance.
 
-## Gameplay Video
+## Custom Reinforcement Learning Environment
 
-[Watch Gameplay Video](https://youtube.com/shorts/uduFYOvi9fA)
+The `CustomPyEnvironment` is a custom implementation of the `PyEnvironment` provided by `TF-Agents`. This environment defines the:
+- **Action Space**: Move left, move right, or fine adjustment.
+- **Observation Space**: A normalized frame of the game screen.
+- **Reward System**: Rewards for aligning the paddle with the ball, destroying blocks, and avoiding the ball falling.
+
+## Evolutionary Agent
+
+For more detailed information on the implementation of the Evolutionary Agent used in this project, including how it applies evolutionary algorithms to enhance the performance in reinforcement learning scenarios, please refer to the [Evolutionary Agent Documentation](./EvolutionaryAgent.md).
+
+The Evolutionary Agent was a major step in improving the efficiency of reinforcement learning for the Block-Bricks game. The detailed documentation covers:
+- **Population Initialization**
+- **Evaluation and Selection Process**
+- **Crossover and Mutation Mechanics**
+- **Fitness Tracking Over Generations**
+
+Feel free to explore the complete document for insights into how these concepts were implemented and how they contributed to the success of this project.
 
 ## License
 
-The source code and game assets for Block-Bricks are copyrighted and licensed under the terms of the following [license](https://github.com/Gabryel-lima/Block-Bricks/blob/master/LICENSE).
-
-## Usage Restrictions
-
-1. This game and its source code are provided for learning, fun, and entertainment purposes only. You are not allowed to commercialize the game or any part of it without prior authorization.
-
-2. You are allowed to study, modify, and improve the game's source code for your personal use. However, any modifications or improvements made must be kept private and should not be publicly distributed without authorization.
-
-3. Redistribution of this game, either in whole or in part, requires prior written authorization from the copyright owner.
-
-4. This game is provided "as is," without warranties of any kind, either expressed or implied. The copyright owner is not liable for any damages or consequences resulting from the use of this game.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Contributions
 
-Contributions for improvements and bug fixes are welcome! Before submitting a pull request with your changes, please reach out for permission and discuss the proposed alterations.
+Contributions are welcome! Feel free to open issues or pull requests with improvements and suggestions.
 
 ## Contact
 
-For any questions, special permissions, or additional information, contact the copyright owner:
+For any questions or collaboration opportunities, please contact me:
 
-Email: [Gabryel-lima](mailto:gabbryellimasi@gmail.com)
+- **Email**: [gabbryellimasi@gmail.com](mailto:gabbryellimasi@gmail.com)
+

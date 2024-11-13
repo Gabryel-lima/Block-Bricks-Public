@@ -1,6 +1,9 @@
 
-import pygame
+from src.core.imports import pygame
 
+#from logs.utils import *
+
+LINE_GREEN = (0, 255, 0, 0)
 
 class PlayerBase:
     def __init__(self, game_base):
@@ -11,6 +14,14 @@ class PlayerBase:
         self.width_draw_x = 40 # 40
         self.height_draw_y = 1 # 1
         self.rect = pygame.Rect(self.pos_x, self.pos_y, self.get_width_draw_x, self.height_draw_y)
+
+    @property
+    def get_pos_center_x(self) -> int:
+        return self.rect.centerx
+    
+    @get_pos_center_x.setter
+    def set_pos_center_x(self, novo_valor: int):
+        self.rect.centerx = novo_valor
 
     @property
     def get_pos_x(self) -> int:
@@ -55,6 +66,16 @@ class PlayerBase:
 
         self.rect.x = self.pos_x
 
-    def reset(self):
-        self.pos_x = self.game_base.width / 2 - self.get_width_draw_x / 2
+    def exp_player_collision(self, border):
+        if self.pos_x - 5 <= border.left:
+            self.pos_x = border.left + 5
+
+        if self.pos_x + 45 >= border.right:
+            self.pos_x = border.right - 45
+
         self.rect.x = self.pos_x
+
+    def reset(self):
+        self.pos_x = ((self.game_base.width / 2) - (self.get_width_draw_x / 2))
+        self.rect.x = self.pos_x
+        

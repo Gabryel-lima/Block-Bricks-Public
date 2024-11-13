@@ -1,0 +1,3 @@
+# Imagens de Sprites de textura
+
+### Implementação futura...

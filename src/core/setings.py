@@ -1,10 +1,5 @@
-import os
-import pygame
 
-PATH = os.path.abspath('.') + '/'
-
-COLOR_BUTTON_SUBLIME = (250, 250, 250)
-
+from src.core.imports import pygame
 
 class ConfigVars:
     def __init__(self, game_base):

@@ -1,13 +1,11 @@
 
-
 import pygame
 
-
 class ResizeInterface:
-    def __init__(self, game_base):
+    def __init__(self, game_base: object):
         self.game_base = game_base
         self.original_resolution = (self.game_base.width, self.game_base.height)
-        
+
     def for_dimenssoes_tela(self, nova_res:tuple, res_original:tuple): 
         nova = nova_res
         original = res_original
@@ -97,6 +95,24 @@ class ResizeInterface:
         
         self.game_base.blocks.lis_blocos.clear()
         self.game_base.blocks.criar_blocos()
+
+    # def calculo_obter_proporcao_blocos_gym(self, nova_resolucao=tuple):
+    #     nova_res = nova_resolucao 
+    #     res_orginal = self.original_resolution
+
+    #     bloco_rect = self.game_base.blocks.bloco_Rect
+    #     lis_blocos = self.game_base.blocks.lis_blocos
+
+    #     if nova_res != res_orginal:
+    #         for rect in lis_blocos:
+    #             rect.width -= bloco_rect.width 
+    #             rect.height -= bloco_rect.height 
+    #         self.game_base.blocks.dimensionamento_espaco_blocos -= 5
+    #         self.game_base.blocks.dimensionamento_largura_bloco -= 5 # Para alterar e centralizar os valores seria recomnedado mudar o espaço_blocos de multiplicação para adição ou subtração.
+    #         self.game_base.blocks.dimensionamento_altura_bloco -= 5 # Para alterar e centralizar os valores seria recomnedado mudar o espaço_blocos de multiplicação para adição ou subtração.
+        
+    #     self.game_base.blocks.lis_blocos.clear()
+    #     self.game_base.blocks.criar_blocos()
 
     def calculo_obter_proporcao_players(self, nova_resolucao=tuple):
         nova_res = nova_resolucao 

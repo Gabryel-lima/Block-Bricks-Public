@@ -1,35 +1,29 @@
-
-#import os
 from src.core.block_bricks import Game
 
-#main_dir = os.path.split(os.path.abspath(__file__))[0]
+def cprfi():
 
-import pygame
-pygame.init()
+    def mainProfile():
+        Game()
 
-# def cprfi():
+    import cProfile
+    import pstats
 
-#     def mainProfile():
-#         Game()
+    profile = cProfile.Profile()
+    profile.enable()
 
-#     import cProfile
-#     import pstats
+    mainProfile()
 
-#     profile = cProfile.Profile()
-#     profile.enable()
+    profile.disable()
+    stats = pstats.Stats(profile)
+    stats.strip_dirs()
+    stats.sort_stats('calls')
+    stats.print_stats()
 
-#     mainProfile()
-
-#     profile.disable()
-#     stats = pstats.Stats(profile)
-#     stats.strip_dirs()
-#     stats.sort_stats('calls')
-#     stats.print_stats()
 
 def main():
     jogo = Game()
     jogo.run()
 
+
 if __name__ == "__main__":
     main()
-
