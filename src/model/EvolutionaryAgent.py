@@ -276,7 +276,7 @@ class EvolutionaryAgent:
         plt.xlabel('Geração')
         plt.ylabel('Fitness')
         plt.grid(True)
-        plt.savefig('train')
+        plt.savefig('./train')
 
 if __name__ == "__main__":
     # Inicializar o ambiente personalizado

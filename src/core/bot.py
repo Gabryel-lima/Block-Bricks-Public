@@ -11,10 +11,10 @@ import numpy as np
 class Bot:
     def __init__(self, game_base):
         self.game_base = game_base 
-        self.pos_x = 280 # 280
-        self.pos_y = 402 # 402
-        self.width_draw_x = 40 # 40
-        self.height_draw_y = 1 # 1
+        self.pos_x = 280
+        self.pos_y = 402
+        self.width_draw_x = 40
+        self.height_draw_y = 1
         self.rect = pygame.Rect(self.pos_x, self.pos_y, self.width_draw_x, self.height_draw_y)
         self.model = None
         self.load_weights()
