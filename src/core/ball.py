@@ -50,6 +50,10 @@ class Ball:
         self.y = novo_valor
         self.bola_Rect.y = novo_valor
 
+    @property
+    def init_movement(self) -> float:
+        return self.VPos_x
+
     def desenho_bola(self):                       # self.rand_color[:3]
         pygame.draw.circle(self.game_base.screen, self.rand_color[:3], self.bola_Rect.center, self.raio)
     

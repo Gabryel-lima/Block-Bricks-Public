@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="block_bricks",
+    name="Block_Bricks",
     version="2.0",
     author="Gabryel-lima",
     author_email="gabbryellimasi@gmail.com",
