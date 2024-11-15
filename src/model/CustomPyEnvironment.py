@@ -20,7 +20,7 @@ class CustomPyEnvironment(PyEnvironment):
         render_mode (str): Modo de renderização do ambiente ('human' ou 'rgb_array').
         game (Game): Instância do jogo que contém a lógica principal.
     """
-    metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 60} #TODO: Ainda não utilizado
+    __metadata__ = {"render_modes": ["human", "rgb_array"], "render_fps": 60} #TODO: Ainda não utilizado
 
     def __init__(self, render_mode: str = None, seed: int = None):
         """
@@ -119,7 +119,7 @@ class CustomPyEnvironment(PyEnvironment):
         Args:
             action (int): Ação a ser aplicada (0 - mover à direita, 1 - mover à esquerda, 2 - ajuste fino).
         """
-        distance_to_ball = (self.game.ball.bola_Rect.centerx - self.game.bot.rect.centerx)
+        distance_to_ball = (self.game.ball.rect.centerx - self.game.bot.rect.centerx)
         if action == 0:  # Move para direita
             self.game.bot.move_right()
         elif action == 1:  # Move para esquerda

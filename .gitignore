@@ -162,10 +162,10 @@ cython_debug/
 # Ignorar diretórios de ambiente Python
 venv
 assets/Sprites.md
-src/core/game_base.py
+#src/core/game_base.py
 src/core/decorators.py
 src/data
 tests
-block_bricks.py
+#block_bricks.py
 sounds
 videos
