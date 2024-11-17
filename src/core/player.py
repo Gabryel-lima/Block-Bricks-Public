@@ -1,4 +1,3 @@
-
 from src.core.imports import pygame
 
 from src.core.player_base import PlayerBase

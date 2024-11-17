@@ -1,4 +1,3 @@
-
 from src.core.imports import pygame
 
 class Fonts:

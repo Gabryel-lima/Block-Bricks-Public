@@ -163,9 +163,9 @@ cython_debug/
 venv
 assets/Sprites.md
 #src/core/game_base.py
-src/core/decorators.py
+#src/core/decorators.py
 src/data
 tests
 #block_bricks.py
-sounds
-videos
+#sounds
+#videos
