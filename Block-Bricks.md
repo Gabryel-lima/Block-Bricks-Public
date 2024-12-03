@@ -16,7 +16,7 @@ The game backend includes logic for controlling the paddle, ball dynamics, colli
 
 For more detailed information about specific components of the project, check out the following documents:
 
-- [Detailed Game Documentation](./README.md): Provides an in-depth explanation of the game's backend, mechanics, and strategies used to enhance gameplay.
+- [Detailed Game Documentation](./Block-Bricks-Doc.md): Provides an in-depth explanation of the game's backend, mechanics, and strategies used to enhance gameplay.
 - [Evolutionary Agent Documentation](./EvolutionaryAgent.md): Explains the implementation of the Evolutionary Agent and how it enhances reinforcement learning performance.
 
 ## Custom Reinforcement Learning Environment
@@ -144,4 +144,4 @@ For questions, special permissions, or additional information, please contact th
 
 ## Learn More
 
-For a deeper dive into the game's backend and reinforcement learning integration, please see the [Block-Bricks Documentation](./Block-Bricks.md).
+For a deeper dive into the game's backend and reinforcement learning integration, please see the [Block-Bricks-Documentation](./Block-Bricks-Doc.md).
