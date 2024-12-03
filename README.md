@@ -47,6 +47,6 @@ For any questions, special permissions, or additional information, contact the c
 
 Email: [Gabryel-lima](mailto:gabbryellimasi@gmail.com)
 
-## Back to Main Project
+## Go to Explain Project
 
-To learn more about the broader context of this project, including other components such as the game backend and reinforcement learning environment setup, please visit the [Main README](./README.md).
+To learn more about the broader context of this project, including other components such as the game backend and reinforcement learning environment setup, please visit the [Main README](./Block-Bricks.md).
