@@ -23,17 +23,16 @@ class Game(GameBase):
         #self.sound_collision = pygame.mixer.Sound('sounds/encosta_bloco.wav')
         #self.sound_game_over = pygame.mixer.Sound('sounds/som_de_fim.wav')
         #self.sound_over_level = pygame.mixer.Sound('sounds/som_fim_nivel.wav')
-        self.loading_last_points = self.carregar_melhor_pontuacao()
-        self.mens_bp = f'Best Points: {self.loading_last_points}'
-        self.mens_game_over = f'Game over!'
-        self.game_init = False
-        self.current_game = 0
+        # self.loading_last_points = self.carregar_melhor_pontuacao()
+        # self.mens_bp = f'Best Points: {self.loading_last_points}'
+        # self.mens_game_over = f'Game over!'
+        # self.game_init = False
+        # self.current_game = 0
 
         # TODO: Melhorar este carinhas aqui em baixo ...
         self.channels = 3
-        self.screen_surface = scaled_surface_percent(self.screen, percentage=10)
+        self.screen_surface = scaled_surface_percent(self.rect_manager.screen, percentage=10)
         self.window_size = (self.screen_surface.get_width(), self.screen_surface.get_height())
-        self.sensor_line_data: np.ndarray = None
 
     def update_caption_with_fps(self):
         # Obtém o FPS atual e atualiza o título da janela
@@ -42,10 +41,10 @@ class Game(GameBase):
 
     def verify_height_ball(self):
         # pos_y lim 420.0
-        if self.ball.y + self.ball.raio >= self.height - self.relative_height_ball:
-            text_format = self.fonts.font_arial.render(f'{self.mens_game_over}',
+        if self.ball.y + self.ball.raio >= self.rect_manager.screen.get_height() - self.ball.relative_ball_pos:
+            text_format = self.fonts.font_arial.render(f'{self.text.over}',
                                                         False,  (127, 127, 127))
-            self.screen.blit(text_format, self.mesg_fj_blit_xy)
+            self.rect_manager.screen.blit(text_format, self.rect_manager.rects.get("blit_text_game_over"))
 
             self.particao_verificar_colisao()
 
@@ -117,45 +116,6 @@ class Game(GameBase):
         sound.set_volume(0.30)
         sound.play()
 
-    def carregar_melhor_pontuacao(self):
-        try:
-            with open('src/json/best_score.json', 'r') as file:
-                data = json.load(file)
-                return data['best_score']
-        except (FileNotFoundError, KeyError):
-            return 0
-            
-    def salvar_melhor_pontuacao(self):
-        data = {'best_score': self.loading_last_points}
-        with open('src/json/best_score.json', 'w') as file:
-            json.dump(data, file)
-
-    def atualiza_melhor_pontuacao(self):
-        if self.init_points > self.loading_last_points:
-            self.loading_last_points = self.init_points
-            self.salvar_melhor_pontuacao()
-            self.mens_bp = f'Best points: {self.loading_last_points}'
-
-    def reset_pontos2(self):
-        if self.mensagem_fim_de_nivel:
-            self.mesg2 = f'Points: {self.init_points}'
-        else:
-            self.init_points = 0
-            self.mesg2 = f'Points: {self.init_points}'
-
-    def atualiza_pontuacao(self):
-        self.init_points += 1
-        self.mens_points_1_2 = f'Points: {self.init_points}'
-
-    def reset_pontos_and_levels(self):
-        if self.mensagem_fim_de_nivel:
-            self.mens_points_1_2 = f'Points: {self.init_points}'
-            self.mesg_nivel = f'Level: {self.level}'
-        self.init_points = 0
-        self.mens_points_1_2 = f'Points: {self.init_points}'
-        self.blocks.level_blocks = 0
-        self.mesg_nivel = f'Level: {self.blocks.level_blocks}'
-
     def reset(self): # Esse metodo retorna o menu.
         if self.width == 600:
             self.game_init = False
@@ -172,25 +132,10 @@ class Game(GameBase):
             self.rect_botao_player2 = self.list_tela_inicial[1]
             self.rect_botao_config = self.list_tela_config[7]
 
-    def exibir_pontuacao(self):
-        mensagem = self.mens_points_1_2
-        texto_formatado = self.fonts.font_candara.render(mensagem, False, (127,127,127))
-        self.screen.blit(texto_formatado, self.blit_xy_mesg1_pontos)
-
-    def exibe_melhor_pontuacao(self):
-        mensagem = self.mens_bp
-        texo_formatado = self.fonts.font_candara.render(mensagem, False, (127,127,127))
-        self.screen.blit(texo_formatado, self.blit_xy_mesg_bp1)
-
-    def exibir_nivel(self):
-        mensagem = self.mens_level
-        texto_formatado = self.fonts.font_candara.render(mensagem, False, (127, 127, 127))
-        self.screen.blit(texto_formatado, self.blit_xy_exibe_nivel)
-
     def mensagem_fim_de_nivel(self):
         if len(self.blocks.lis_blocos) == 0:
             texto_formatado = self.fonts.font_arial.render(f'You win! {self.level}', True, (127, 127, 127))
-            self.screen.blit(texto_formatado, self.mesg_fj_blit_xy)
+            self.rect_manager.screen.blit(texto_formatado, self.mesg_fj_blit_xy)
             self.niveis_count()
             #self.som_de_fim_de_nivel()
             pygame.display.flip()
@@ -228,7 +173,7 @@ class Game(GameBase):
                     self.ball.VPos_x *= -1
                     
     def layout(self):
-        self.screen.fill((0, 0, 0))
+        self.rect_manager.screen.fill((0, 0, 0))
         self.desenho_borda()
         self.botoes_tela_inicial_modos()
         self.selecao_de_modos_estrutura()
@@ -237,8 +182,8 @@ class Game(GameBase):
             self.desenho_borda()
             self.ball.draw()
             self.blocks.desenhar_blocos()
-            #self.new_sensor.draw_lines_sensor(self.screen)
-            #self.sensor.draw_lines_sensor(self.screen)
+            #self.new_sensor.draw_lines_sensor(self.rect_manager.screen)
+            #self.sensor.draw_lines_sensor(self.rect_manager.screen)
 
             if self.player_mode == "Player1":
                 self.player.desenho_player()
@@ -251,7 +196,7 @@ class Game(GameBase):
                 self.bot.draw_bot()
 
     def reset_env(self): # Realmente tenho que ver que canário reseta o jogo todo
-        self.screen.fill((0, 0, 0))
+        self.rect_manager.screen.fill((0, 0, 0))
         self.ball.reset()
         self.blocks.resetar_blocos()
         self.player.reset() # Ele parece generaizar melhor as experiencias retornando para o estado inicial
@@ -261,9 +206,9 @@ class Game(GameBase):
     def render_frame(self):
         #self.clock_game.tick(120) # Mantém a o frame_hate como no jogo normal
  
-        self.screen.fill((0, 0, 0))
+        self.rect_manager.screen.fill((0, 0, 0))
 
-        canvas = self.screen_surface
+        canvas = self.rect_manager.screen_surface
 
         self.desenho_borda()
 
@@ -324,7 +269,7 @@ class Game(GameBase):
 
             self.mensagem_fim_de_nivel()
             pygame.display.update()
-            #return pygame.surfarray.array3d(self.screen)
+            #return pygame.surfarray.array3d(self.rect_manager.screen)
 
 """ Mensage_box exemple: """
 

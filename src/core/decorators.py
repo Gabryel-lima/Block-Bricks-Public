@@ -49,6 +49,17 @@ def clock(func):
 
     return clocked
 
+from datetime import datetime
+
+@lambda _: _()
+def program_start_time() -> str:
+    now = datetime.now()
+    return f'{now: %c}'
+
+start_time: str = f'{datetime.now(): %c}'
+
+print(start_time)
+
 # @clock
 # def soma(a,b):
 #     return a + b

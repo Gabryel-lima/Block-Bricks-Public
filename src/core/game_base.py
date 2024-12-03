@@ -6,23 +6,27 @@ from src.core.player2 import Player2
 from src.core.bot import Bot
 from src.core.ball import Ball
 from src.core.blocks import Blocks
-from src.core.config_button import ConfigButton
 from src.core.resize_Interface import ResizeInterface
 from src.core.fonts import Fonts
-from src.core.rect_manager import RectManager
+from src.core.rect_manager import ConfigButton, RectManager
+from src.core.draw_manager import DrawManager
+from src.core.text_manager import TextManager
 
 
 class GameBase:
     def __init__(self):
+        self.text = TextManager()
+        self.fonts = Fonts()
+        self.config_button = ConfigButton(self)
         self.rect_manager = RectManager()
+        self.draw_manager = DrawManager(screen=self.rect_manager.screen, rect_manager=self.rect_manager,
+                                        fonts=self.fonts, config_button=self.config_button)
         self.player = Player(self)
         self.player2 = Player2(self)
         self.bot = Bot(self)
         self.ball = Ball(self)
         self.blocks = Blocks(self)
-        self.fonts = Fonts()
-        self.config_button = ConfigButton(self)
-        self.resizeinterface = ResizeInterface(self)
+        #self.resizeinterface = ResizeInterface(self)
         self.setings = ConfigVars(self)
 
     __subclasses__ = []

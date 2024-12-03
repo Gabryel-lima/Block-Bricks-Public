@@ -2,7 +2,9 @@ from src.core.imports import pygame
 
 
 class DrawManager:
-    def __init__(self, screen, rect_manager, fonts, config_button):
+    def __init__(self, 
+                 screen: pygame.Surface, rect_manager: pygame.rect.Rect, 
+                 fonts, config_button):
         """
         Inicializa o DrawManager com a tela, o RectManager e outras dependências.
 
