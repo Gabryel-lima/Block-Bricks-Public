@@ -3,20 +3,22 @@ from src.core.imports import pygame
 
 class DrawManager:
     def __init__(self, 
-                 screen: pygame.Surface, rect_manager: pygame.rect.Rect, 
+                 screen: pygame.Surface, blocks, rect_manager: pygame.rect.Rect, 
                  fonts, config_button):
         """
         Inicializa o DrawManager com a tela, o RectManager e outras dependências.
 
         :param screen: Superfície principal do jogo (pygame.display.set_mode).
+        :param blocks: Se refere aos alvos a serem destruidos do jogo.
         :param rect_manager: Instância do RectManager para gerenciar os rects.
         :param fonts: Objeto para gerenciar fontes.
         :param config_button: Instância para gerenciar o botão de configurações.
         """
         self.screen = screen
+        self.blocks = blocks
         self.rect_manager = rect_manager
         self.fonts = fonts
-        self.config_button = config_button
+        #self.config_button = config_button
 
         # Cores e pontuações iniciais
         self.cor_botao_modo1 = (127, 127, 127)

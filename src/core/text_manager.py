@@ -2,8 +2,10 @@ from src.core.imports import pygame
 
 
 class TextManager:
-    def __init__(self):
+    def __init__(self, fonnts):
+        self.fonts = fonnts
         self.over: str = 'Game Over'
+        self.win: str = 'You win!'
         self.player_1_2: str = f'Player {0}'
         self.modo_bot: str = 'Bot'
         self.back: str = 'Back'
@@ -13,20 +15,18 @@ class TextManager:
         self.init_level: int = 1
         self.level: str = f'Level: {self.init_level}'
 
-    def exibir_pontuacao(self):
+    def draw_pontuation(self):
         mensagem = self.mens_points_1_2
         texto_formatado = self.fonts.font_candara.render(mensagem, False, (127,127,127))
         self.screen.blit(texto_formatado, self.blit_xy_mesg1_pontos)
 
-    def exibe_melhor_pontuacao(self):
+    def draw_best_pontuation(self):
         mensagem = self.mens_bp
         texo_formatado = self.fonts.font_candara.render(mensagem, False, (127,127,127))
         self.screen.blit(texo_formatado, self.blit_xy_mesg_bp1)
 
-    def exibir_nivel(self):
+    def draw_level(self):
         mensagem = self.mens_level
         texto_formatado = self.fonts.font_candara.render(mensagem, False, (127, 127, 127))
         self.screen.blit(texto_formatado, self.blit_xy_exibe_nivel)
 
-    def __format__(self, format_spec):
-        pass

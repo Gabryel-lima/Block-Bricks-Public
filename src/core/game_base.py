@@ -8,24 +8,28 @@ from src.core.ball import Ball
 from src.core.blocks import Blocks
 from src.core.resize_Interface import ResizeInterface
 from src.core.fonts import Fonts
-from src.core.rect_manager import ConfigButton, RectManager
+from src.core.rect_manager import RectManager #, ConfigButton
 from src.core.draw_manager import DrawManager
 from src.core.text_manager import TextManager
+from src.core.points import Points
+from src.core.color import Color
 
 
 class GameBase:
     def __init__(self):
-        self.text = TextManager()
         self.fonts = Fonts()
-        self.config_button = ConfigButton(self)
+        self.text = TextManager(fonnts=self.fonts)
+        self.color = Color
+        #self.config_button = ConfigButton(self) TODO: Só por enquanto, até configurar a const PATH corretamente
         self.rect_manager = RectManager()
-        self.draw_manager = DrawManager(screen=self.rect_manager.screen, rect_manager=self.rect_manager,
-                                        fonts=self.fonts, config_button=self.config_button)
         self.player = Player(self)
         self.player2 = Player2(self)
         self.bot = Bot(self)
         self.ball = Ball(self)
         self.blocks = Blocks(self)
+        self.points = Points(blocks=self.blocks)
+        self.draw_manager = DrawManager(screen=self.rect_manager.screen, blocks=self.blocks, rect_manager=self.rect_manager,
+                                        fonts=self.fonts)#, config_button=self.config_button)
         #self.resizeinterface = ResizeInterface(self)
         self.setings = ConfigVars(self)
 
@@ -44,43 +48,43 @@ class GameBase:
         cls.__instace_count__ += 1
         return instance
 
-    def executar_particao_proporcao_resolucao(self):
-        self.resizeinterface.calculo_obter_proporcao(nova_resolucao=self.resolution_base)
-        self.resizeinterface.calculo_obter_proporcao_blocos(nova_resolucao=self.resolution_base)
-        self.resizeinterface.calculo_obter_proporcao_players(nova_resolucao=self.resolution_base)
-        self.config_button.copy_surface.fill((0, 0, 0))
+    # def executar_particao_proporcao_resolucao(self):
+    #     self.resizeinterface.calculo_obter_proporcao(nova_resolucao=self.resolution_base)
+    #     self.resizeinterface.calculo_obter_proporcao_blocos(nova_resolucao=self.resolution_base)
+    #     self.resizeinterface.calculo_obter_proporcao_players(nova_resolucao=self.resolution_base)
+    #     self.config_button.copy_surface.fill((0, 0, 0))
 
-    def executar_particao_proporcao_resolucao2(self):
-        self.list_tela_config[0] = pygame.Rect(240, 170, 120, 40)
+    # def executar_particao_proporcao_resolucao2(self):
+    #     self.list_tela_config[0] = pygame.Rect(240, 170, 120, 40)
 
-        self.resizeinterface.calculo_obter_proporcao(nova_resolucao=self.resolution_base2)
-        self.vars_screen_dimensions(width=self.resolution_base2[0], height=self.resolution_base2[1])
+    #     self.resizeinterface.calculo_obter_proporcao(nova_resolucao=self.resolution_base2)
+    #     self.vars_screen_dimensions(width=self.resolution_base2[0], height=self.resolution_base2[1])
 
-        self.resizeinterface.calculo_obter_proporcao_blocos(nova_resolucao=self.resolution_base2)
-        self.resizeinterface.calculo_obter_proporcao_players(nova_resolucao=self.resolution_base2)
+    #     self.resizeinterface.calculo_obter_proporcao_blocos(nova_resolucao=self.resolution_base2)
+    #     self.resizeinterface.calculo_obter_proporcao_players(nova_resolucao=self.resolution_base2)
         
-        self.config_button.copy_surface.fill((0, 0, 0))
+    #     self.config_button.copy_surface.fill((0, 0, 0))
 
-    def executar_particao_desenho_botoes_resolucao(self, particao_config: None): # ou 5
-        while True:
-            for event in pygame.event.get():
-                if event.type == pygame.constants.QUIT:
-                    pygame.quit()
+    # def executar_particao_desenho_botoes_resolucao(self, particao_config: None): # ou 5
+    #     while True:
+    #         for event in pygame.event.get():
+    #             if event.type == pygame.constants.QUIT:
+    #                 pygame.quit()
 
-                if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-                    rect1, rect2, rect3 = self.config_button.partition_draw_buttons_resolutions()
+    #             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+    #                 rect1, rect2, rect3 = self.config_button.partition_draw_buttons_resolutions()
 
-                    if rect1.collidepoint(pygame.mouse.get_pos()):
-                        self.executar_particao_proporcao_resolucao()
-                        return
-                    elif rect2.collidepoint(pygame.mouse.get_pos()):
-                        self.executar_particao_proporcao_resolucao2()
-                        return
+    #                 if rect1.collidepoint(pygame.mouse.get_pos()):
+    #                     self.executar_particao_proporcao_resolucao()
+    #                     return
+    #                 elif rect2.collidepoint(pygame.mouse.get_pos()):
+    #                     self.executar_particao_proporcao_resolucao2()
+    #                     return
 
-            self.screen.fill((0, 0, 0))
-            self.desenho_borda()
-            particao_config()
-            pygame.display.update()
+    #         self.screen.fill((0, 0, 0))
+    #         self.desenho_borda()
+    #         particao_config()
+    #         pygame.display.update()
 
     def desenho_botao_back(self) -> pygame.Rect:
         pos_mouse = pygame.mouse.get_pos()

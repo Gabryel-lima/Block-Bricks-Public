@@ -9,7 +9,7 @@ from tf_agents.specs import BoundedArraySpec
 from tf_agents.environments.py_environment import PyEnvironment
 from tf_agents.trajectories import time_step as ts
 
-from src.core.block_bricks import Game
+from src.est_core.block_bricks import Game
 
 class CustomPyEnvironment(PyEnvironment):
     """
@@ -142,8 +142,8 @@ class CustomPyEnvironment(PyEnvironment):
         done = False
 
         # Posicionamento da bola e do jogador
-        ball_center = self.game.ball.bola_Rect.centerx
-        player_center = self.game.player.rect.centerx
+        ball_center = self.game.ball.rect.centerx
+        player_center = self.game.bot.rect.centerx
         distance_to_ball = ball_center - player_center  # Pode ser positivo (direita) ou negativo (esquerda)
         tolerance = 10  # Tolerância para considerar o alinhamento como "perfeito"
 
@@ -154,6 +154,20 @@ class CustomPyEnvironment(PyEnvironment):
             # Penalidade proporcional à distância, menor para evitar desmotivação
             reward -= 0.0003 * abs(distance_to_ball)
 
+        counter = 0 # TODO Tá meio estranho isso aqui ainda
+        previous_len = len(self.game.blocks.lis_blocos)
+        if len(self.game.blocks.lis_blocos) == previous_len:
+            counter += 1
+        else:
+            counter = 0
+
+        if counter > 600:
+            reward -= 5.0
+            counter = 0
+            self.game.reset_env()
+            pygame.time.wait(200)
+            done = True
+
         # Recompensa por destruir todos os blocos
         if len(self.game.blocks.lis_blocos) == 0:
             reward += 15
@@ -162,12 +176,12 @@ class CustomPyEnvironment(PyEnvironment):
             done = True
 
         # Recompensa por colidir com a bola (indica sucesso em manter a bola)
-        if self.game.player.rect.colliderect(self.game.ball.bola_Rect):
+        if self.game.bot.rect.colliderect(self.game.ball.rect):
             reward += 10.0
 
         # Recompensa adicional por destruir blocos
         for block in self.game.blocks.lis_blocos:
-            if self.game.ball.bola_Rect.colliderect(block):
+            if self.game.ball.rect.colliderect(block):
                 reward += 0.5 + (5 - len(self.game.blocks.lis_blocos)) * 0.2  # Quanto menos blocos, mais recompensa
 
         # Penalidade e finalização do jogo se a bola cair no chão
@@ -189,7 +203,7 @@ class CustomPyEnvironment(PyEnvironment):
         obs = self.game.render_frame() / 255.0
         return obs
 
-    def render(self, mode="human") -> np.ndarray | None: #TODO: Ainda não tem garantia dde funcionar corretamente. Apenas nas próximas versões
+    def render(self, mode="human") -> np.ndarray: #TODO: Ainda não tem garantia dde funcionar corretamente. Apenas nas próximas versões
         """
         Renderiza o estado atual do ambiente.
 

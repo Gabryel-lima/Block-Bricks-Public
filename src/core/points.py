@@ -8,10 +8,10 @@ class Points:
 
         :param blocks: Referência aos blocos do jogo (para resetar níveis, se necessário).
         """
+        self.blocks = blocks
         self.points = 0  # Pontuação inicial
         self.loading_points = self._load_best_pontuation('src/json/best_score.json')  # Melhor pontuação do jogador 1
         self.loading_lp2 = self._load_best_pontuation('src/json/best_score2.json')  # Melhor pontuação do jogador 2
-        self.blocks = blocks  # Blocos do jogo, usado para gerenciar níveis
         self.level = 0  # Nível inicial
         self.is_game_over = False  # Flag para exibir mensagens de fim de nível
 
@@ -43,7 +43,6 @@ class Points:
         else:
             self.points = 0
             self.mens_points_1_2 = f'Points: {self.points}'
-            self.blocks.level_blocks = 0
             self.mesg_nivel = f'Level: {self.blocks.level_blocks}'
 
     # ------------------ Melhor Pontuação (Player 1 e Player 2) ------------------

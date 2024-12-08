@@ -1,5 +1,10 @@
 from src.core.block_bricks import Game
 
+def main_bot_train():
+    from src.est_core.block_bricks import Game
+    jogo = Game()
+    jogo.run()
+
 def cprfi():
 
     def mainProfile():
@@ -27,3 +32,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    #main_bot_train()

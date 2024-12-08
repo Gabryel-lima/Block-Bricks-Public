@@ -40,10 +40,19 @@ class Bot:
         self.rect.x = self._pos_x
 
     def load_weights(self):
+        """
+        Verifica se o arquivo do modelo existe e carrega os pesos.
+        Caso contrário, exibe uma mensagem de erro.
+        """
         base_dir = os.path.dirname(os.path.abspath(__file__))
-        model_path = os.path.join(base_dir, '..', 'model', 'hard_model.keras')
-        self.model = keras.models.load_model(model_path)
-        print(f"Modelo carregado dir={base_dir} path={model_path}")
+        model_path = os.path.join(base_dir, 'hard_model.keras')
+
+        if os.path.exists(model_path):
+            self.model = keras.models.load_model(model_path)
+            print(f"Modelo carregado dir={base_dir} path={model_path}")
+        else:
+            print(f"Modelo não encontrado no caminho: {model_path}")
+            self.model = None
     
     def draw_bot(self):
         pygame.draw.rect(self.game_base.screen, (20, 155, 40),
