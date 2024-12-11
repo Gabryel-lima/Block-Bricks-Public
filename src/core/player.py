@@ -7,7 +7,7 @@ class Player(PlayerBase):
         super().__init__(game_base)
 
     def desenho_player(self):
-        pygame.draw.rect(self.game_base.screen, (255, 5, 5),
+        pygame.draw.rect(self.game_base.rect_manager.screen, (255, 5, 5),
                          ((self.pos_x), (self.pos_y), self.width_draw_x, 5))
 
     def input_player(self):

@@ -3,40 +3,44 @@ from src.core.imports import pygame
 
 class DrawManager:
     def __init__(self, 
-                 screen: pygame.Surface, blocks, rect_manager: pygame.rect.Rect, 
-                 fonts, config_button):
+                 screen: pygame.Surface, blocks, text_manager, rect_manager: pygame.rect.Rect, 
+                 fonts, color):
         """
         Inicializa o DrawManager com a tela, o RectManager e outras dependências.
 
         :param screen: Superfície principal do jogo (pygame.display.set_mode).
         :param blocks: Se refere aos alvos a serem destruidos do jogo.
+        :param text_manager: Textos do jogo.
         :param rect_manager: Instância do RectManager para gerenciar os rects.
         :param fonts: Objeto para gerenciar fontes.
         :param config_button: Instância para gerenciar o botão de configurações.
+        :param color: Cores do jogo.
         """
         self.screen = screen
         self.blocks = blocks
+        self.text_manager = text_manager
         self.rect_manager = rect_manager
         self.fonts = fonts
         #self.config_button = config_button
+        self.color = color
 
         # Cores e pontuações iniciais
-        self.cor_botao_modo1 = (127, 127, 127)
-        self.cor_botao_modo2 = (127, 127, 127)
-        self.cor_botao_bot = (127, 127, 127)
-        self.cor_clink = (127, 127, 127)
+        self.cor_botao_modo1 = (self.color.GRAY)
+        self.cor_botao_modo2 = (self.color.GRAY)
+        self.cor_botao_bot = (self.color.GRAY)
+        self.cor_clink = (self.color.GRAY)
         self.init_points = 0
 
     def exibe_melhor_pontuacao2(self):
         """Exibe a melhor pontuação do jogador 2."""
-        mensagem = self.mens_bp2
+        mensagem = self.text_manager.mens_bp2
         texto_formatado = self.fonts.font_candara.render(mensagem, False, (127, 127, 127))
         rect = self.rect_manager.get_rect('blit_text_best_points_player2')
         self.screen.blit(texto_formatado, rect)
 
     def exibir_pontuacao2(self):
         """Exibe a pontuação atual do jogador 2."""
-        mensagem = self.mens_points_1_2
+        mensagem = self.text_manager.mens_points_1_2
         texto_formatado = self.fonts.font_candara.render(mensagem, False, (127, 127, 127))
         rect = self.rect_manager.get_rect('blit_text_points_player2')
         self.screen.blit(texto_formatado, rect)
@@ -44,7 +48,7 @@ class DrawManager:
     def atualiza_pontuacao2(self):
         """Atualiza a pontuação do jogador 2."""
         self.init_points += 1
-        self.mens_points_1_2 = f"Points: {self.init_points}"
+        self.text_manager.mens_points_1_2 = f"Points: {self.init_points}"
 
     def desenho_borda(self):
         """Desenha a borda da tela."""
@@ -110,5 +114,5 @@ class DrawManager:
         self.screen.blit(texto_formatado_c, blit_clink)
 
         # Renderiza os componentes adicionais
-        self.config_button.button_config()
+        #self.config_button.button_config()
         self.animação_de_sublinhar_botao_tela_inicial()

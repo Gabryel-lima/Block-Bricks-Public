@@ -79,7 +79,7 @@ class Blocks:
     def desenhar_blocos(self):
         #self.rand_color = np.random.randint(10, 255, size=3) # Colocando a instância aqui só para ficar engraçado kkkk
         for bloco in self.lis_blocos:
-            pygame.draw.rect(self.game_base.screen, self.cor_blocos, bloco, width=0, border_radius=3)
+            pygame.draw.rect(self.game_base.rect_manager.screen, self.cor_blocos, bloco, width=0, border_radius=3)
             
     def animacao_blocos(self, index:int):
         for indice, bloco in enumerate(self.lis_blocos):
@@ -87,8 +87,8 @@ class Blocks:
                 bloco_antigo = bloco.copy()
                 bloco_novo = bloco_antigo.copy()
                 bloco_antigo.inflate_ip(1.0, 1.3)
-                pygame.draw.rect(self.game_base.screen, self.cor_animacao, bloco_antigo, width=0, border_radius=3)
-                pygame.draw.rect(self.game_base.screen, self.cor_animacao_none, bloco_novo, width=5, border_radius=2)
+                pygame.draw.rect(self.game_base.rect_manager.screen, self.cor_animacao, bloco_antigo, width=0, border_radius=3)
+                pygame.draw.rect(self.game_base.rect_manager.screen, self.cor_animacao_none, bloco_novo, width=5, border_radius=2)
 
     def resetar_blocos(self):
         self.lis_blocos.clear()

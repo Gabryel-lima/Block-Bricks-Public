@@ -17,20 +17,27 @@ from src.core.color import Color
 
 class GameBase:
     def __init__(self):
-        self.fonts = Fonts()
-        self.text = TextManager(fonnts=self.fonts)
-        self.color = Color
+        # TODO: Melhorar os usos destas heranças pelas classes. Para evitar tipos não rastreáveis e indefinidos
+        # Até porque a ordem da herança pode se complicar aqui com o tempo
+
         #self.config_button = ConfigButton(self) TODO: Só por enquanto, até configurar a const PATH corretamente
+
+        self.color = Color
         self.rect_manager = RectManager()
+        self.fonts = Fonts()
+        self.text = TextManager(self, fonnts=self.fonts)
         self.player = Player(self)
         self.player2 = Player2(self)
         self.bot = Bot(self)
         self.ball = Ball(self)
         self.blocks = Blocks(self)
-        self.points = Points(blocks=self.blocks)
-        self.draw_manager = DrawManager(screen=self.rect_manager.screen, blocks=self.blocks, rect_manager=self.rect_manager,
-                                        fonts=self.fonts)#, config_button=self.config_button)
-        #self.resizeinterface = ResizeInterface(self)
+        self.points = Points(text_manager=self.text, blocks=self.blocks)
+        self.draw_manager = DrawManager(screen=self.rect_manager.screen, blocks=self.blocks, 
+                                        text_manager=self.text, rect_manager=self.rect_manager,
+                                        fonts=self.fonts, color=self.color)#, config_button=self.config_button)
+        
+        #self.resizeinterface = ResizeInterface(self) TODO: Ainda vou ver se vou manter desta forma
+
         self.setings = ConfigVars(self)
 
     __subclasses__ = []
@@ -81,48 +88,55 @@ class GameBase:
     #                     self.executar_particao_proporcao_resolucao2()
     #                     return
 
-    #         self.screen.fill((0, 0, 0))
+    #         self.rect_manager.clear_bg_screen()
     #         self.desenho_borda()
     #         particao_config()
     #         pygame.display.update()
 
-    def desenho_botao_back(self) -> pygame.Rect:
+    def desenho_botao_back(self) -> pygame.Rect: # TODO: Isso aqui definitivamente está horroroso
         pos_mouse = pygame.mouse.get_pos()
-        rect_botao = self.rect_botao_voltar
-        mensagem = self.back
+        rect_botao = self.rect_manager.get_rect("button_back")
+        mensagem = self.text.back
+        rect_back_sublime = self.rect_manager.get_rect("underline_back")
 
-        self.cor_botao_voltar = (150,150,150) if rect_botao.collidepoint(pos_mouse) else (127,127,127)
-        self.rect_botao_sublinhar_voltar.width += 68 if rect_botao.collidepoint(pos_mouse) else -6
+        self.cor_botao_voltar = (150, 150, 150) if rect_botao.collidepoint(pos_mouse) else (127, 127, 127)
+        rect_back_sublime.width += 68 if rect_botao.collidepoint(pos_mouse) else -6
 
-        if self.rect_botao_voltar.width > 0:  
+        if rect_botao.width > 0:  
             texto_formatado1 = self.fonts.font_arial.render(mensagem, False, self.cor_botao_voltar)
-            self.screen.blit(texto_formatado1, self.blit_xy_voltar)
+            self.rect_manager.screen.blit(texto_formatado1, self.rect_manager.get_rect("blit_text_back"))
 
             self.animaçao_de_sublinhar_botao_voltar()
 
         return rect_botao
 
     def animaçao_de_sublinhar_botao_voltar(self):
-        pygame.draw.rect(self.screen, (255, 255, 255), self.rect_botao_sublinhar_voltar)
+        rect_back_sublime = self.rect_manager.get_rect("underline_back")
 
-        self.rect_botao_sublinhar_voltar.width = min(self.rect_botao_sublinhar_voltar.width, 6)
-        self.rect_botao_sublinhar_voltar.width = max(self.rect_botao_sublinhar_voltar.width, 0)
+        pygame.draw.rect(self.rect_manager.screen, (255, 255, 255), rect_back_sublime)
+
+        rect_back_sublime.width = min(rect_back_sublime.width, 6)
+        rect_back_sublime.width = max(rect_back_sublime.width, 0)
 
     def selecao_de_modos_estrutura(self): # 4 em decisão de onde o palyer vai interagir 
+        button_player1 = self.rect_manager.get_rect("button_player1")
+
         for event in pygame.event.get():
             if event.type == pygame.constants.QUIT:
                 pygame.quit()
 
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                if self.rect_botao_player1.collidepoint(pygame.mouse.get_pos()):
-                    self.rect_botao_player1 = pygame.Rect(0,0,0,0)
+                if button_player1.collidepoint(pygame.mouse.get_pos()):
+                    self.rect_botao_player2 = pygame.Rect(0,0,0,0)
+                    self.bot.rect = pygame.Rect(0,0,0,0)
                     pygame.time.delay(300)
                     self.player_mode = "Player1"
 
                     self.executar_particao(particao=self.player.desenho_player)
 
                 elif self.rect_botao_player2.collidepoint(pygame.mouse.get_pos()):
-                    self.rect_botao_player2 = pygame.Rect(0,0,0,0)
+                    button_player1 = pygame.Rect(0,0,0,0)
+                    self.bot.rect = pygame.Rect(0,0,0,0)
                     pygame.time.delay(300)
                     self.player_mode = "Player2"
 
@@ -130,6 +144,8 @@ class GameBase:
 
                 elif self.rect_botao_bot.collidepoint(pygame.mouse.get_pos()):
                     self.rect_botao_bot = pygame.Rect(0,0,0,0)
+                    button_player1 = pygame.Rect(0,0,0,0)
+                    self.rect_botao_player2 = pygame.Rect(0,0,0,0)
                     pygame.time.delay(300)
                     self.player_mode = "AI"
 
@@ -154,7 +170,7 @@ class GameBase:
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     if self.desenho_botao_back().collidepoint(pygame.mouse.get_pos()):
                         self.reset()
-                        self.screen.fill((0, 0, 0))
+                        self.rect_manager.clear_bg_screen()
                         pygame.time.delay(300)
                         return
 
@@ -165,7 +181,7 @@ class GameBase:
                     if self.player_mode == "Player1":
                         self.player.reset()
                         self.player2.rect = pygame.rect.Rect(0,0,0,0)
-                        self.screen.fill((0, 0, 0))
+                        self.rect_manager.clear_bg_screen()
                         return
                     
                     elif self.player_mode == "Player2":
@@ -175,7 +191,7 @@ class GameBase:
                                                  self.player2.pos_y,
                                                  self.player2.width_draw_x,
                                                  self.player2.height_draw_y)
-                        self.screen.fill((0, 0, 0))
+                        self.rect_manager.clear_bg_screen()
                         return
                     
                     elif self.player_mode == "AI":
@@ -187,20 +203,16 @@ class GameBase:
                                                          self.bot.pos_y,
                                                          self.bot.width_draw_x,
                                                          self.bot.height_draw_y)
-                        self.screen.fill((0, 0, 0))
+                        self.rect_manager.clear_bg_screen()
                         return
 
-            self.screen.fill((0, 0, 0))
+            self.rect_manager.clear_bg_screen()
             self.desenho_botao_back()
-            self.desenho_borda()
+            self.draw_manager.desenho_borda()
             self.ball.draw()
             self.blocks.desenhar_blocos()
             particao()
             pygame.display.update()
-
-    def niveis_count(self):
-        self.level += 1
-        self.mens_level = f'Level: {self.level}'
                 
     def manipula_nivel(self):
         while True:

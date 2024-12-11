@@ -1,3 +1,4 @@
+from __future__ import annotations # Evita erro de dupla importação, só para garantir.
 from src.core.block_bricks import Game
 
 def main_bot_train():

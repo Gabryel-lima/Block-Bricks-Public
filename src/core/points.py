@@ -1,82 +1,87 @@
 import json
 
+from src.core.text_manager import TextManager
+from src.core.blocks import Blocks
+# TODO: Estas formas de importações devem ser melhoradas 
 
 class Points:
-    def __init__(self, blocks):
+    def __init__(self, text_manager: TextManager, blocks: Blocks):
         """
         Gerenciador de pontos e níveis para o jogador.
 
+        :param text_manager: Referência aos textos do jogo.
         :param blocks: Referência aos blocos do jogo (para resetar níveis, se necessário).
         """
+        self.text = text_manager
         self.blocks = blocks
-        self.points = 0  # Pontuação inicial
-        self.loading_points = self._load_best_pontuation('src/json/best_score.json')  # Melhor pontuação do jogador 1
-        self.loading_lp2 = self._load_best_pontuation('src/json/best_score2.json')  # Melhor pontuação do jogador 2
-        self.level = 0  # Nível inicial
-        self.is_game_over = False  # Flag para exibir mensagens de fim de nível
+        self._counter_points: int = 0  # Pontuação inicial
+        self._init_level: int = 0  # Nível inicial
+        self.loading_points: int = self._load_best_pontuation('src/json/best_score.json')
+        self.loading_points_2: int = self._load_best_pontuation('src/json/best_score2.json')
+        self.is_game_over: bool = False  # Flag para exibir mensagens de fim de nível
 
-        # Mensagens padrão
-        self.mens_points_1_2 = f'Points: {self.points}'
-        self.mens_bp = f'Best points: {self.loading_points}'
-        self.mens_bp2 = f'Best pontuation: {self.loading_lp2}'
-        self.mesg_nivel = f'Level: {self.level}'
+    # ------------------ Propriedades de Pontos ------------------
+
+    @property
+    def init_points(self) -> str:
+        return f'{self.text.str_points}{self._counter_points}'
+
+    @init_points.setter
+    def init_points(self, value: int):
+        if value < 0:
+            raise ValueError("A pontuação não pode ser negativa.")
+        self._counter_points = value
+
+    @property
+    def best_pontuation(self) -> str:
+        return f'{self.text.str_best_points}{self.loading_points}'
+
+    @property
+    def init_level(self) -> str:
+        return f'{self.text.str_level}{self._init_level + 1}'
 
     # ------------------ Gerenciamento de Pontuações ------------------
 
-    def update_points(self):
+    def update_points(self, increment: int = 1) -> None:
         """Atualiza a pontuação do jogador."""
-        self.points += 1
-        self.mens_points_1_2 = f'Points: {self.points}'
+        self.init_points = self._counter_points + increment
 
-    def reset_points(self):
+    def reset_points(self) -> None:
         """Reseta a pontuação atual do jogador."""
-        self.points = 0
-        self.mens_points_1_2 = f'Points: {self.points}'
+        self._counter_points = 0
 
-    def reset_points_and_levels(self):
+    def reset_points_and_levels(self) -> None:
+        """Reseta pontos e níveis do jogador."""
+        self.reset_points()
+        self._init_level = 0
+
+    def update_best_pontuation(self, player: int = 1) -> None:
         """
-        Reseta os pontos e o nível do jogador, dependendo da mensagem de fim de nível.
+        Atualiza a melhor pontuação para o jogador especificado.
+
+        :param player: Jogador 1 ou 2.
         """
-        if self.is_game_over:
-            self.mens_points_1_2 = f'Points: {self.points}'
-            self.mesg_nivel = f'Level: {self.level}'
-        else:
-            self.points = 0
-            self.mens_points_1_2 = f'Points: {self.points}'
-            self.mesg_nivel = f'Level: {self.blocks.level_blocks}'
-
-    # ------------------ Melhor Pontuação (Player 1 e Player 2) ------------------
-
-    def update_best_pontuation_player1(self):
-        """Atualiza a melhor pontuação do jogador 1."""
-        if self.points > self.loading_points:
-            self.loading_points = self.points
+        if player == 1 and self._counter_points > self.loading_points:
+            self.loading_points = self._counter_points
             self._save_best_pontuation('src/json/best_score.json', self.loading_points)
-            self.mens_bp = f'Best points: {self.loading_points}'
-
-    def update_best_pontuation_player2(self):
-        """Atualiza a melhor pontuação do jogador 2."""
-        if self.points > self.loading_lp2:
-            self.loading_lp2 = self.points
-            self._save_best_pontuation('src/json/best_score2.json', self.loading_lp2)
-            self.mens_bp2 = f'Best pontuation: {self.loading_lp2}'
+        elif player == 2 and self._counter_points > self.loading_points_2:
+            self.loading_points_2 = self._counter_points
+            self._save_best_pontuation('src/json/best_score2.json', self.loading_points_2)
 
     # ------------------ Gerenciamento de Níveis ------------------
 
-    def update_level(self):
+    def update_level(self) -> None:
         """Atualiza o nível do jogador."""
-        self.level += 1
-        self.mesg_nivel = f'Level: {self.level}'
+        self._init_level += 1
 
-    def reset_level(self):
+    def reset_level(self) -> None:
         """Reseta o nível do jogador."""
-        self.level = 0
-        self.mesg_nivel = f'Level: {self.level}'
+        self._init_level = 0
 
     # ------------------ Operações de Carregamento e Salvamento ------------------
 
     @staticmethod
-    def _load_best_pontuation(file_path):
+    def _load_best_pontuation(file_path: str) -> int:
         """
         Carrega a melhor pontuação de um arquivo JSON.
 
@@ -91,7 +96,7 @@ class Points:
             return 0
 
     @staticmethod
-    def _save_best_pontuation(file_path, best_score):
+    def _save_best_pontuation(file_path: str, best_score: int = 0) -> None:
         """
         Salva a melhor pontuação em um arquivo JSON.
 

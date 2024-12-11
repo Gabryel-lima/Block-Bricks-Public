@@ -8,7 +8,7 @@ from src.data.coleta_dados import count_reinits
 from src.core.decorators import clock, bool_game_over
 import numpy as np
 
-from paths import PATH
+from src.core.paths import PATH
 
 
 class Game(GameBase):
@@ -26,7 +26,7 @@ class Game(GameBase):
         # self.loading_last_points = self.carregar_melhor_pontuacao()
         # self.mens_bp = f'Best Points: {self.loading_last_points}'
         # self.mens_game_over = f'Game over!'
-        # self.game_init = False
+        self.game_init = False
         # self.current_game = 0
 
         # TODO: Melhorar este carinhas aqui em baixo ...
@@ -68,10 +68,10 @@ class Game(GameBase):
                 self.blocks.lis_blocos.remove(blocks)
                 if self.player_mode == "Player1":
                     self.points.update_points()
-                    self.points.update_best_pontuation_player1()
+                    self.points.update_best_pontuation(player=1)
                 elif self.player_mode == "Player2":
                     self.points.update_points()
-                    self.points.update_best_pontuation_player2()
+                    self.points.update_best_pontuation(player=2)
                 elif self.player_mode == "AI":
                     pass
 
@@ -79,7 +79,7 @@ class Game(GameBase):
         #self.som_de_fim_de_jogo()
         pygame.display.flip()
         pygame.time.delay(3000)
-        self.points._save_best_pontuation(file_path="../json/")
+        #self.points._save_best_pontuation(file_path="src/json/best_score.json", best_score=self.points.loading_points)
         modo_selecionado = self.selecao_de_modos_estrutura()
 
         if modo_selecionado == self.executar_particao(particao=self.player.desenho_player):
@@ -123,16 +123,12 @@ class Game(GameBase):
             self.ball.reset()
             self.player.reset()
             self.player2.reset()
-            self.rect_manager.rects.update(self.rect_manager.get_rect("button_player1"))
-            self.rect_manager.rects.update(self.rect_manager.get_rect("button_player2"))
-            self.rect_manager.rects.update(self.rect_manager.get_rect("button_bot"))
-            self.rect_manager.rects.update(self.rect_manager.get_rect("button_config")) # TODO: Ainda falta configurar o botão de config
+            self.rect_manager.get_group("initial_screen")
+            #self.rect_manager.rects.update(self.rect_manager.get_rect("button_config")) # TODO: Ainda falta configurar o botão de config
 
         elif self.rect_manager.screen.get_width() > 600:
-            self.rect_manager.rects.update(self.rect_manager.get_rect("button_player1"))
-            self.rect_manager.rects.update(self.rect_manager.get_rect("button_player2"))
-            self.rect_manager.rects.update(self.rect_manager.get_rect("button_bot"))
-            self.rect_manager.rects.update(self.rect_manager.get_rect("button_config")) # TODO: Ainda falta configurar o botão de config
+            self.rect_manager.get_group("initial_screen")
+            #self.rect_manager.rects.update(self.rect_manager.get_rect("button_config")) # TODO: Ainda falta configurar o botão de config
 
     def mensagem_fim_de_nivel(self):
         if len(self.blocks.lis_blocos) == 0:

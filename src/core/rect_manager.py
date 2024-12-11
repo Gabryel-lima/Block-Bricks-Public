@@ -15,9 +15,9 @@ class EnumRects(Enum):
 class RectManager:
     def __init__(self):  
         self.enum_rects = EnumRects
-        self.rects = {}             # Dicionário para armazenar os rects por nome
-        self.groups = {}            # Dicionário para agrupar rects por tela/propósito
-        self.screen_config = {}     # Configurações da tela (largura, altura, cor de fundo)
+        self.rects: dict[int] = {}             # Dicionário para armazenar os rects por nome
+        self.groups: dict[int] = {}            # Dicionário para agrupar rects por tela/propósito
+        self.screen_config: dict[int] = {}     # Configurações da tela (largura, altura, cor de fundo)
         self.screen = None          # Atributo para armazenar a tela do PyGame
         # self.resolution_base = (600, 600)
         # self.resolution_base2 = (745, 690)
@@ -59,7 +59,7 @@ class RectManager:
         """Retorna as configurações atuais da tela."""
         return self.screen_config
 
-    def clear_screen(self):
+    def clear_bg_screen(self):
         """Limpa a tela com a cor de fundo configurada."""
         if self.screen is not None:
             self.screen.fill(self.screen_config.get("bg_color", (0, 0, 0)))
@@ -81,11 +81,11 @@ class RectManager:
                 self.groups[group] = []
             self.groups[group].append(name)
 
-    def get_rect(self, name):
+    def get_rect(self, name: str) -> pygame.rect.Rect: # Ele retorna Rect, pelo menos ao que parece 😁
         """Retorna um rect pelo nome."""
         return self.rects.get(name)
 
-    def get_group(self, group):
+    def get_group(self, group: str) -> list:
         """Retorna todos os rects pertencentes a um grupo."""
         if group in self.groups:
             return [self.rects[name] for name in self.groups[group]]

@@ -36,9 +36,10 @@ class Ball:
         self.VPos_y = random.uniform(min_speed, max_speed)
 
     def check_collision(self):
-        if self.x - self.raio <= 0 or self.x + self.raio >= self.game_base.border.width:
+        border = self.game_base.rect_manager.get_rect("screen_border")
+        if self.x - self.raio <= 0 or self.x + self.raio >= border.width:
             self.VPos_x *= -1
-        if self.y - self.raio <= 0 or self.y + self.raio >= self.game_base.border.height:
+        if self.y - self.raio <= 0 or self.y + self.raio >= border.height:
             self.VPos_y *= -1
 
     def border_collide(self) -> tuple[float, float]:
@@ -59,7 +60,7 @@ class Ball:
     def draw(self, color=None, raio=None):
         color = color or self.rand_color
         raio = raio or self.raio
-        pygame.draw.circle(self.game_base.screen, color, self.rect.center, raio)
+        pygame.draw.circle(self.game_base.rect_manager.screen, color, self.rect.center, raio)
 
     def limit_velocity(self, max_velocity: float):
         velocity_magnitude = (self.VPos_x**2 + self.VPos_y**2)**0.5
