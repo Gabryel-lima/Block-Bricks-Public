@@ -21,7 +21,7 @@ class PlayerBase(ABC):
         self.width_draw_x = 40
         self.height_draw_y = 1
         self.rect = pygame.Rect(self.pos_x, self.pos_y, self.width_draw_x, self.height_draw_y)
-        self.border = self.game_base.rect_manager.get_rect("screen_border")
+        self.border = self.game_base.rect_manager.enum_rects.SCREEN_BORDER
 
     @property
     def center_x(self) -> int:

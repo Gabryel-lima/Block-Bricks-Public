@@ -7,170 +7,232 @@ from typing_extensions import Union
 from enum import Enum
 
 class EnumRects(Enum):
-    
-    def __call__(self):
-        return pygame.rect.Rect(self.value)
+    BLIT_TEXT_PLAYER1 = (245, 170, 170, 40)
+    BLIT_TEXT_PLAYER2 = (245, 230, 230, 40)
+    BLIT_TEXT_BOT = (245, 290, 120, 40)
 
-    BLIT_PLAYER_1 = (245, 170, 170, 0)
-    BLIT_PLAYER_2 = (245, 230, 230, 0)
+    BUTTON_PLAYER1 = (240, 170, 120, 40)
+    BUTTON_PLAYER2 = (240, 230, 120, 40)
+    BUTTON_BOT = (240, 290, 120, 40)
+
+    UNDERLINE_BUTTON_PLAYER1 = (245, 210, 0, 5)
+    UNDERLINE_BUTTON_PLAYER2 = (245, 270, 0, 5)
+    UNDERLINE_BUTTON_BOT = (245, 330, 0, 5)
+
+    BLIT_TEXT_CREATOR = (40, 520, 0, 40)
+    BUTTON_CREATOR_LINK = (40, 522, 280, 40)
+    UNDERLINE_CREATOR_LINK = (40, 558, 0, 3)
+
+    # Rects da tela pré-jogo
+    BUTTON_BACK = (40, 300, 85, 30)
+    UNDERLINE_BACK = (40, 340, 0, 3)
+
+    BLIT_TEXT_GAME_OVER = (215, 225, 0, 0)
+    BLIT_TEXT_BACK = (40, 300, 0, 0)
+    BLIT_TEXT_POINTS_PLAYER1 = (40, 430, 0, 0)
+    BLIT_TEXT_BEST_POINTS_PLAYER1 = (40, 530, 0, 0)
+    BLIT_TEXT_LEVEL = (40, 480, 0, 0)
+    BLIT_TEXT_POINTS_PLAYER2 = (40, 430, 0, 0)
+    BLIT_TEXT_BEST_POINTS_PLAYER2 = (40, 530, 0, 0)
+
+    # Rects da tela de configurações
+    BLIT_RESOLUTION_OPTION1 = (0, 0, 0, 0)
+    BLIT_RESOLUTION_OPTION2 = (240, 230, 120, 40)
+    BLIT_RESOLUTION_OPTION3 = (240, 290, 120, 40)
+
+    BLIT_IMAGE_CONFIG_ICON = (475, 495, 0, 0)
+    BUTTON_CONFIG = (474, 494, 53, 53)
+
+    BLIT_TEXT_RESOLUTION_OPTION1 = (245, 170, 0, 0)
+    BLIT_TEXT_RESOLUTION_OPTION2 = (245, 230, 0, 0)
+    BLIT_TEXT_RESOLUTION_OPTION3 = (232, 290, 0, 0)
+
+    # Rect dinâmico para borda da tela
+    SCREEN_BORDER = (0, 0, 0, 0)
+
+    def __new__(cls, x, y, width, height):
+        """Cria e retorna um objeto pygame.Rect como valor da constante."""
+        obj = object.__new__(cls)
+        obj._value_ = pygame.Rect(x, y, width, height)
+        return obj
+    
+    def update_rect(self, x, y, width, height):
+        """Atualiza dinamicamente o rect da enumeração."""
+        self.value.update(x, y, width, height)
+
+    def to_rect(self):
+        """Converte o valor da enumeração em um objeto pygame.Rect."""
+        return pygame.Rect(*self.value)
 
 class RectManager:
-    def __init__(self, game_base):
-        self.game_base = game_base  
+    def __init__(self):
         self.enum_rects = EnumRects
-        self.rects: dict[str, pygame.rect.Rect] = {}             # Dicionário para armazenar os rects por nome
-        self.groups: dict[str, pygame.rect.Rect] = {}            # Dicionário para agrupar rects por tela/propósito
-        self.screen_config: dict[str, pygame.rect.Rect] = {}     # Configurações da tela (largura, altura, cor de fundo)
-        self.screen = None          # Atributo para armazenar a tela do PyGame
-        # self.resolution_base = (600, 600)
-        # self.resolution_base2 = (745, 690)
-        
-        # Chama o método para configurar a tela ao inicializar
+        self.rects: dict[EnumRects, pygame.Rect] = {key: key.to_rect() for key in EnumRects}
+        self.groups: dict[str, list[EnumRects]] = {}
+        self.screen = None
+
+        # Inicializa a tela e configurações iniciais
         self.set_screen_dimensions(width=608, height=608, bg_color=(0, 0, 0))
         self.setup_initial_screen()
-        self.setup_pre_game_screen()
-        self.setup_config_screen()
+        self.setup_additional_groups()
 
-    # ------------------ Configuração da Tela ------------------
-
-    def set_screen_dimensions(self, width: int = 720, height: int = 800, bg_color=(0, 0, 0)):
-        """
-        Configura as dimensões da tela e atualiza o rect de borda.
-        """
+    def set_screen_dimensions(self, width: int, height: int, bg_color=(0, 0, 0)):
+        """Configura as dimensões e cor de fundo da tela."""
         if width <= 0 or height <= 0:
-            raise ValueError("A largura e altura devem ser maiores que 0.")
-
-        # Configura a tela do PyGame
-        self.screen = pygame.display.set_mode(size=(width, height))
-
+            raise ValueError("Largura e altura devem ser maiores que 0.")
+        
+        self.screen = pygame.display.set_mode((width, height))
+        self.enum_rects.SCREEN_BORDER.update_rect(0, 0, width, height)
+        
         # Atualiza as configurações da tela
-        self.screen_config = {
+        self._screen_config = {
             "width": width,
             "height": height,
             "bg_color": bg_color,
         }
 
-        # Atualiza ou cria o rect de borda
-        if 'screen_border' not in self.rects:
-            self.add_rect('screen_border', 0, 0, width, height)
-        else:
-            border = self.get_rect('screen_border')
-            border.width = width
-            border.height = height
-
-    def get_screen_config(self):
-        """Retorna as configurações atuais da tela."""
-        return self.screen_config
-
     def clear_bg_screen(self):
-        """Limpa a tela com a cor de fundo configurada."""
-        if self.screen is not None:
-            self.screen.fill(self.screen_config.get("bg_color", (0, 0, 0)))
-
-    # ------------------ Gerenciamento de Rects ------------------
-
-    def add_rect(self, name, x, y, width, height, group=None):
-        """Adiciona um rect ao gerenciador e opcionalmente a um grupo."""
-        if name in self.rects:
-            raise ValueError(f"Já existe um rect com o nome '{name}'.")
-        
-        # Cria o rect
-        rect = pygame.Rect(x, y, width, height)
-        self.rects[name] = rect
-
-        # Adiciona ao grupo, se especificado
-        if group:
-            if group not in self.groups:
-                self.groups[group] = []
-            self.groups[group].append(name)
-
-    def get_rect(self, name: str):
-        """Retorna um rect pelo nome."""
-        return self.rects.get(name)
-
-    def get_group(self, group: str) -> list[pygame.rect.Rect] | list:
-        """Retorna todos os rects pertencentes a um grupo."""
-        if group in self.groups:
-            return [self.rects[name] for name in self.groups[group]]
-        return []
-
-    def move_all(self, dx, dy, group=None):
-        """
-        Move todos os rects por um deslocamento (dx, dy).
-        Se um grupo for especificado, move apenas os rects desse grupo.
-        """
-        rects = self.get_group(group) if group else self.rects.values()
-        for rect in rects:
-            rect.x += dx
-            rect.y += dy
-
-    def move_rect(self, name, dx, dy):
-        """
-        Move um único rect por um deslocamento (dx, dy).
-        """
-        rect = self.get_rect(name)
-        if rect:
-            rect.x += dx
-            rect.y += dy
-
-    # ------------------ Configuração de Telas Específicas ------------------
+        """Limpa a tela com a cor de fundo."""
+        if self.screen:
+            self.screen.fill(self._screen_config.get("bg_color"))
 
     def setup_initial_screen(self):
-        """Cria os rects específicos para a tela inicial."""
-        self.add_rect('blit_text_player1', 245, 170, 170, 0, group='initial_screen')
-        self.add_rect('blit_text_player2', 245, 230, 230, 0, group='initial_screen')
-        self.add_rect('blit_text_bot', 245, 290, 120, 0, group='initial_screen')
+        """Agrupa os rects para a tela inicial."""
+        self.groups['initial_screen'] = [
+            self.enum_rects.BLIT_TEXT_PLAYER1.value,
+            self.enum_rects.BLIT_TEXT_PLAYER2.value,
+            self.enum_rects.BUTTON_PLAYER1.value,
+            self.enum_rects.BUTTON_PLAYER2.value,
+            self.enum_rects.BUTTON_BOT.value,
+            self.enum_rects.UNDERLINE_BUTTON_PLAYER1.value,
+            self.enum_rects.UNDERLINE_BUTTON_PLAYER2.value,
+            self.enum_rects.UNDERLINE_BUTTON_BOT.value,
+        ]
 
-        self.add_rect('button_player1', 240, 170, 120, 40, group='initial_screen')
-        self.add_rect('button_player2', 240, 230, 120, 40, group='initial_screen')
-        self.add_rect('button_bot', 240, 290, 120, 40, group='initial_screen')
+    def setup_additional_groups(self):
+        """Configura grupos adicionais de rects."""
+        self.groups['pre_game_screen'] = [
+            self.enum_rects.BUTTON_BACK.value,
+            self.enum_rects.UNDERLINE_BACK.value,
+        ]
 
-        self.add_rect('underline_button_player1', 245, 210, 0, 5, group='initial_screen')
-        self.add_rect('underline_button_player2', 245, 270, 0, 5, group='initial_screen')
-        self.add_rect('underline_button_bot', 245, 330, 0, 5, group='initial_screen')
+        self.groups['game_over_screen'] = [
+            self.enum_rects.BLIT_TEXT_GAME_OVER.value,
+            self.enum_rects.BLIT_TEXT_BACK.value,
+            self.enum_rects.BLIT_TEXT_POINTS_PLAYER1.value,
+            self.enum_rects.BLIT_TEXT_BEST_POINTS_PLAYER1.value,
+            self.enum_rects.BLIT_TEXT_LEVEL.value,
+            self.enum_rects.BLIT_TEXT_POINTS_PLAYER2.value,
+            self.enum_rects.BLIT_TEXT_BEST_POINTS_PLAYER2.value,
+        ]
 
-        self.add_rect('blit_text_creator', 40, 520, 0, 0, group='initial_screen')
-        self.add_rect('button_creator_link', 40, 522, 280, 30, group='initial_screen')
-        self.add_rect('underline_creator_link', 40, 558, 0, 3, group='initial_screen')
+        self.groups['settings_screen'] = [
+            self.enum_rects.BLIT_RESOLUTION_OPTION1.value,
+            self.enum_rects.BLIT_RESOLUTION_OPTION2.value,
+            self.enum_rects.BLIT_RESOLUTION_OPTION3.value,
+            self.enum_rects.BLIT_IMAGE_CONFIG_ICON.value,
+            self.enum_rects.BUTTON_CONFIG.value,
+            self.enum_rects.BLIT_TEXT_RESOLUTION_OPTION1.value,
+            self.enum_rects.BLIT_TEXT_RESOLUTION_OPTION2.value,
+            self.enum_rects.BLIT_TEXT_RESOLUTION_OPTION3.value,
+        ]
 
-    def setup_pre_game_screen(self):
-        """Cria os rects específicos para a tela pré-jogo."""
-        self.add_rect('button_back', 40, 300, 85, 30, group='pre_game_screen')
-        self.add_rect('underline_back', 40, 340, 0, 3, group='pre_game_screen')
+        self.groups['creator_info'] = [
+            self.enum_rects.BLIT_TEXT_CREATOR.value,
+            self.enum_rects.BUTTON_CREATOR_LINK.value,
+            self.enum_rects.UNDERLINE_CREATOR_LINK.value,
+        ]
 
-        self.add_rect('blit_text_game_over', 215, 225, 0, 0, group='pre_game_screen')
-        self.add_rect('blit_text_back', 40, 300, 0, 0, group='pre_game_screen')
-        self.add_rect('blit_text_points_player1', 40, 430, 0, 0, group='pre_game_screen')
-        self.add_rect('blit_text_best_points_player1', 40, 530, 0, 0, group='pre_game_screen')
-        self.add_rect('blit_text_level', 40, 480, 0, 0, group='pre_game_screen')
-        self.add_rect('blit_text_points_player2', 40, 430, 0, 0, group='pre_game_screen')
-        self.add_rect('blit_text_best_points_player2', 40, 530, 0, 0, group='pre_game_screen')
+        self.groups['dynamic_components'] = [
+            self.enum_rects.SCREEN_BORDER.value,
+        ]
 
-    def setup_config_screen(self):
-        """Cria os rects específicos para a tela de configurações."""
-        self.add_rect('blit_resolution_option1', 0, 0, 0, 0, group='config_screen')
-        self.add_rect('blit_resolution_option2', 240, 230, 120, 40, group='config_screen')
-        self.add_rect('blit_resolution_option3', 240, 290, 120, 40, group='config_screen')
-
-        self.add_rect('blit_image_config_icon', 475, 495, 0, 0, group='config_screen')
-        self.add_rect('button_config', 474, 494, 53, 53, group='config_screen')
-
-        self.add_rect('blit_text_resolution_option1', 245, 170, 0, 0, group='config_screen')
-        self.add_rect('blit_text_resolution_option2', 245, 230, 0, 0, group='config_screen')
-        self.add_rect('blit_text_resolution_option3', 232, 290, 0, 0, group='config_screen')
-
-    def draw_group(self, group, color=(255, 255, 255), px=2):
+    def draw_group(self, group: str, color=(255, 255, 255), px=2):
         """Desenha todos os rects pertencentes a um grupo."""
-        if self.screen is not None and group in self.groups:
-            rects = self.get_group(group)
-            for rect in rects:
-                pygame.draw.rect(self.screen, color, rect, px)
+        if self.screen and group in self.groups:
+            for rect_enum in self.groups[group]:
+                pygame.draw.rect(self.screen, color, self.rects[rect_enum], px)
 
-    def collide_button(rect: pygame.rect.Rect):
-        return rect.collidepoint(pygame.mouse.get_pos())
-    
-    def clear_rect(self, name: str):
-        return self.get_rect(name).update(0, 0, 0, 0)
+    def move_rect(self, rect_enum: EnumRects, dx: int, dy: int):
+        """Move um único rect."""
+        rect = self.rects.get(rect_enum)
+        if rect:
+            rect.move_ip(dx, dy)
+
+    def collide_button(self, rect_enum: EnumRects):
+        """Verifica se o mouse colide com um rect específico."""
+        rect = self.rects.get(rect_enum)
+        return rect and rect.collidepoint(pygame.mouse.get_pos())
+
+    def clear_rect(self, rect_enum: EnumRects):
+        """Limpa o rect definindo-o como um tamanho zero."""
+        rect = self.rects.get(rect_enum)
+        if rect:
+            rect.update(0, 0, 0, 0)
+
+    def desenho_borda(self): #TODO
+        """Desenha a borda da tela."""
+        rect = self.rect_manager.enum_rects.SCREEN_BORDER.value
+        pygame.draw.rect(self.screen, (115, 115, 115), rect, 3)
+
+    def animação_de_sublinhar_botao_tela_inicial(self):
+        """Anima e desenha os sublinhados na tela inicial."""
+        underline_player1 = self.rect_manager.enum_rects.UNDERLINE_BUTTON_PLAYER1.value
+        underline_player2 = self.rect_manager.enum_rects.UNDERLINE_BUTTON_PLAYER2.value
+        underline_bot = self.rect_manager.enum_rects.UNDERLINE_BUTTON_BOT.value
+        underline_link = self.rect_manager.enum_rects.UNDERLINE_CREATOR_LINK.value
+
+        if underline_player1 and underline_player2 and underline_bot and underline_link:
+            # Ajusta a largura dos sublinhados com limites e incrementos
+            underline_player1.width = min(max(underline_player1.width + 3, 0), 120)
+            underline_player2.width = min(max(underline_player2.width + 3, 0), 122)
+            underline_bot.width = min(max(underline_bot.width + 3, 0), 50)
+            underline_link.width = min(max(underline_link.width + 3, 0), 280)
+
+            # Desenha os sublinhados na tela
+            pygame.draw.rect(self.rect_manager.screen, (255, 255, 255), underline_player1)
+            pygame.draw.rect(self.rect_manager.screen, (255, 255, 255), underline_player2)
+            pygame.draw.rect(self.rect_manager.screen, (255, 255, 255), underline_bot)
+            pygame.draw.rect(self.rect_manager.screen, (255, 255, 255), underline_link)
+
+    def botoes_tela_inicial_modos(self):
+        """Renderiza e gerencia os botões e textos da tela inicial."""
+        pos_mouse = pygame.mouse.get_pos()
+
+        # Obtém os rects dos botões e textos
+        rect_modo1 = self.rect_manager.enum_rects.BUTTON_PLAYER1.value
+        rect_modo2 = self.rect_manager.enum_rects.BUTTON_PLAYER2.value
+        rect_bot = self.rect_manager.enum_rects.BUTTON_BOT.value
+        rect_creator = self.rect_manager.enum_rects.BUTTON_CREATOR_LINK.value
+
+        blit_player1 = self.rect_manager.enum_rects.BLIT_TEXT_PLAYER1.value
+        blit_player2 = self.rect_manager.enum_rects.BLIT_TEXT_PLAYER2.value
+        blit_bot = self.rect_manager.enum_rects.BLIT_TEXT_BOT.value
+        blit_creator = self.rect_manager.enum_rects.BLIT_TEXT_CREATOR.value
+
+        # Atualiza as cores dos botões com base na posição do mouse
+        cor_player1 = (170, 170, 170) if rect_modo1 and rect_modo1.collidepoint(pos_mouse) else (127, 127, 127)
+        cor_player2 = (170, 170, 170) if rect_modo2 and rect_modo2.collidepoint(pos_mouse) else (127, 127, 127)
+        cor_bot = (170, 170, 170) if rect_bot and rect_bot.collidepoint(pos_mouse) else (127, 127, 127)
+        cor_creator = (170, 170, 170) if rect_creator and rect_creator.collidepoint(pos_mouse) else (127, 127, 127)
+
+        # Renderiza os textos nos botões e no link
+        font = self.fonts.font_impact
+        if blit_player1:
+            texto_player1 = font.render("Player1", False, cor_player1)
+            self.rect_manager.screen.blit(texto_player1, blit_player1)
+        if blit_player2:
+            texto_player2 = font.render("Player2", False, cor_player2)
+            self.rect_manager.screen.blit(texto_player2, blit_player2)
+        if blit_bot:
+            texto_bot = font.render("Bot", False, cor_bot)
+            self.rect_manager.screen.blit(texto_bot, blit_bot)
+        if blit_creator:
+            texto_creator = font.render("Criado por: Gabryel-lima", False, cor_creator)
+            self.rect_manager.screen.blit(texto_creator, blit_creator)
+
+        # Executa a animação dos sublinhados
+        self.animação_de_sublinhar_botao_tela_inicial()
 
 # class ConfigButton:
 #     def __init__(self, game_base):

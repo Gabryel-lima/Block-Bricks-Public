@@ -64,13 +64,13 @@ class Game(GameBase):
                 #self.sound_ball_and_blocks()
                 self.blocks.animated_rect_collision(index=self.blocks.lis_blocks.index(blocks))
                 self.blocks.lis_blocks.remove(blocks)
-                if self.event_handler.mode == "Player1":
+                if self.player_mode == "Player1":
                     self.points.update_points()
                     self.points.update_best_pontuation(player=1)
-                elif self.event_handler.mode == "Player2":
+                elif self.player_mode == "Player2":
                     self.points.update_points()
                     self.points.update_best_pontuation(player=2)
-                elif self.event_handler.mode == "AI":
+                elif self.player_mode == "AI":
                     pass
 
     def sound_ball_and_blocks(self):
@@ -170,7 +170,7 @@ class Game(GameBase):
                     
     def layout(self):
         # TODO: Mais a frente eu melhoro isto aqui.
-        self.rect_manager.screen.fill((0, 0, 0))
+        self.rect_manager.clear_bg_screen()
         self.draw_manager.desenho_borda()
         self.draw_manager.botoes_tela_inicial_modos()
         self.selecao_de_modos_estrutura()

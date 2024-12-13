@@ -24,7 +24,7 @@ class GameBase:
     def __init__(self):
         self.color = Color
         #self.event_handler = EventHandler()
-        self.rect_manager = RectManager(self)
+        self.rect_manager = RectManager()
         self.fonts = Fonts()
         self.text = TextManager(self, fonts=self.fonts)
         self.player = Player(self)
@@ -33,14 +33,14 @@ class GameBase:
         self.ball = Ball(self)
         self.blocks = Blocks(self)
         self.points = Points(text_manager=self.text, blocks=self.blocks)
-        self.draw_manager = DrawManager(
-            screen=self.rect_manager.screen,
-            blocks=self.blocks,
-            text_manager=self.text,
-            rect_manager=self.rect_manager,
-            fonts=self.fonts,
-            color=self.color
-        )
+        # self.draw_manager = DrawManager(
+        #     screen=self.rect_manager.screen,
+        #     blocks=self.blocks,
+        #     text_manager=self.text,
+        #     rect_manager=self.rect_manager,
+        #     fonts=self.fonts,
+        #     color=self.color
+        # )
         #self.setings = ConfigVars(self) # TODO: Ainda tenho que ver como vai funcionar melhor.
 
     def __init_subclass__(cls, **kwargs):
@@ -57,23 +57,23 @@ class GameBase:
 
     def desenho_botao_back(self) -> pygame.Rect: # TODO: Isso aqui definitivamente está horroroso
         pos_mouse = pygame.mouse.get_pos()
-        rect_botao = self.rect_manager.get_rect("button_back")
+        rect_botao = self.rect_manager.enum_rects.BUTTON_BACK.value
         mensagem = self.text.back
-        rect_back_sublime = self.rect_manager.get_rect("underline_back")
+        rect_back_sublime = self.rect_manager.enum_rects.UNDERLINE_BACK.value
 
         self.cor_botao_voltar = (150, 150, 150) if rect_botao.collidepoint(pos_mouse) else (127, 127, 127)
         rect_back_sublime.width += 68 if rect_botao.collidepoint(pos_mouse) else -6
 
         if rect_botao.width > 0:  
             texto_formatado1 = self.fonts.font_arial.render(mensagem, False, self.cor_botao_voltar)
-            self.rect_manager.screen.blit(texto_formatado1, self.rect_manager.get_rect("blit_text_back"))
+            self.rect_manager.screen.blit(texto_formatado1, self.rect_manager.enum_rects.BLIT_TEXT_BACK.value)
 
             self.animaçao_de_sublinhar_botao_voltar()
 
         return rect_botao
 
     def animaçao_de_sublinhar_botao_voltar(self):
-        rect_back_sublime = self.rect_manager.get_rect("underline_back")
+        rect_back_sublime = self.rect_manager.enum_rects.UNDERLINE_BACK.value
 
         pygame.draw.rect(self.rect_manager.screen, (255, 255, 255), rect_back_sublime)
 
@@ -81,7 +81,10 @@ class GameBase:
         rect_back_sublime.width = max(rect_back_sublime.width, 0)
 
     def selecao_de_modos_estrutura(self): # 4 em decisão de onde o palyer vai interagir 
-        button_player1 = self.rect_manager.get_rect("button_player1")
+        button_player1 = self.rect_manager.enum_rects.BUTTON_PLAYER1.value
+        button_player2 = self.rect_manager.enum_rects.BUTTON_PLAYER2.value
+        button_bot = self.rect_manager.enum_rects.BUTTON_BOT.value
+        link = self.rect_manager.enum_rects.BUTTON_CREATOR_LINK.value
 
         for event in pygame.event.get():
             if event.type == pygame.constants.QUIT:
@@ -89,31 +92,27 @@ class GameBase:
 
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 if button_player1.collidepoint(pygame.mouse.get_pos()):
-                    self.rect_botao_player2 = pygame.Rect(0,0,0,0)
-                    self.bot.rect = pygame.Rect(0,0,0,0)
+                    #self.rect_manager.clear_rect(name=button_player1)
                     pygame.time.delay(300)
                     self.player_mode = "Player1"
 
                     self.executar_particao(particao=self.player.draw)
 
-                elif self.rect_botao_player2.collidepoint(pygame.mouse.get_pos()):
-                    button_player1 = pygame.Rect(0,0,0,0)
-                    self.bot.rect = pygame.Rect(0,0,0,0)
+                elif button_player2.collidepoint(pygame.mouse.get_pos()):
+                    #self.rect_manager.clear_rect(name=button_player2)
                     pygame.time.delay(300)
                     self.player_mode = "Player2"
 
                     self.executar_particao(particao=self.player2.draw)
 
-                elif self.rect_botao_bot.collidepoint(pygame.mouse.get_pos()):
-                    self.rect_botao_bot = pygame.Rect(0,0,0,0)
-                    button_player1 = pygame.Rect(0,0,0,0)
-                    self.rect_botao_player2 = pygame.Rect(0,0,0,0)
+                elif button_bot.collidepoint(pygame.mouse.get_pos()):
+                    #self.rect_manager.clear_rect(name=button_bot)
                     pygame.time.delay(300)
                     self.player_mode = "AI"
 
                     self.executar_particao(particao=self.bot.draw_bot)
 
-                elif self.clink_rect.collidepoint(pygame.mouse.get_pos()):
+                elif link.collidepoint(pygame.mouse.get_pos()):
                     webbrowser.open("https://github.com/Gabryel-lima")
                     pygame.time.delay(300)
                 
@@ -131,7 +130,7 @@ class GameBase:
 
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     if self.desenho_botao_back().collidepoint(pygame.mouse.get_pos()):
-                        self.reset()
+                        #self.reset()
                         self.rect_manager.clear_bg_screen()
                         pygame.time.delay(300)
                         return
@@ -180,6 +179,6 @@ class GameBase:
     def next_level(self):
         self.game_init = True
         self.ball.start_movement()
-        self.rect_manager.clear_rect(name="button_player1")
-        self.rect_manager.clear_rect(name="button_player2")
+        self.rect_manager.clear_rect(self.rect_manager.enum_rects.BUTTON_PLAYER1.value)
+        self.rect_manager.clear_rect(self.rect_manager.enum_rects.BUTTON_PLAYER2.value)
 
