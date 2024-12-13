@@ -1,7 +1,7 @@
 import json
 
-from src.core.text_manager import TextManager
-from src.core.blocks import Blocks
+from .text_manager import TextManager
+from .blocks import Blocks
 # TODO: Estas formas de importações devem ser melhoradas 
 
 class Points:

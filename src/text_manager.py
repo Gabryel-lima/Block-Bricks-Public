@@ -1,4 +1,4 @@
-from src.core.imports import pygame
+from .imports import pygame
 
 class CustomString: # TODO: Mais a frente vou me aprofundar meelhor nestes conceitos.
     def __init__(self, value: str):
@@ -10,10 +10,10 @@ class CustomString: # TODO: Mais a frente vou me aprofundar meelhor nestes conce
         return self.value
 
 class TextManager(CustomString):
-    def __init__(self, game_base, fonnts):
+    def __init__(self, game_base, fonts):
         super().__init__(value="")
         self.game_base = game_base
-        self.fonts = fonnts
+        self.fonts = fonts
         self.text_dict: dict = {}
         self.over: str = 'Game Over'
         self.win: str = 'You win!'

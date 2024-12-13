@@ -1,6 +1,7 @@
-from src.core.imports import pygame
+import pygame.draw_py
+from .imports import pygame
 
-from src.core.imports import pygame, os
+from .imports import pygame, os
 from typing_extensions import Union
 
 from enum import Enum
@@ -10,14 +11,16 @@ class EnumRects(Enum):
     def __call__(self):
         return pygame.rect.Rect(self.value)
 
-    EXEMPLO = (245, 170, 170, 0)
+    BLIT_PLAYER_1 = (245, 170, 170, 0)
+    BLIT_PLAYER_2 = (245, 230, 230, 0)
 
 class RectManager:
-    def __init__(self):  
+    def __init__(self, game_base):
+        self.game_base = game_base  
         self.enum_rects = EnumRects
-        self.rects: dict[int] = {}             # Dicionário para armazenar os rects por nome
-        self.groups: dict[int] = {}            # Dicionário para agrupar rects por tela/propósito
-        self.screen_config: dict[int] = {}     # Configurações da tela (largura, altura, cor de fundo)
+        self.rects: dict[str, pygame.rect.Rect] = {}             # Dicionário para armazenar os rects por nome
+        self.groups: dict[str, pygame.rect.Rect] = {}            # Dicionário para agrupar rects por tela/propósito
+        self.screen_config: dict[str, pygame.rect.Rect] = {}     # Configurações da tela (largura, altura, cor de fundo)
         self.screen = None          # Atributo para armazenar a tela do PyGame
         # self.resolution_base = (600, 600)
         # self.resolution_base2 = (745, 690)
@@ -81,11 +84,11 @@ class RectManager:
                 self.groups[group] = []
             self.groups[group].append(name)
 
-    def get_rect(self, name: str) -> pygame.rect.Rect: # Ele retorna Rect, pelo menos ao que parece 😁
+    def get_rect(self, name: str):
         """Retorna um rect pelo nome."""
         return self.rects.get(name)
 
-    def get_group(self, group: str) -> list:
+    def get_group(self, group: str) -> list[pygame.rect.Rect] | list:
         """Retorna todos os rects pertencentes a um grupo."""
         if group in self.groups:
             return [self.rects[name] for name in self.groups[group]]
@@ -162,6 +165,12 @@ class RectManager:
             rects = self.get_group(group)
             for rect in rects:
                 pygame.draw.rect(self.screen, color, rect, px)
+
+    def collide_button(rect: pygame.rect.Rect):
+        return rect.collidepoint(pygame.mouse.get_pos())
+    
+    def clear_rect(self, name: str):
+        return self.get_rect(name).update(0, 0, 0, 0)
 
 # class ConfigButton:
 #     def __init__(self, game_base):

@@ -1,3 +1,3 @@
-from src.core.imports import os
+from .imports import os
 
 PATH = os.path.abspath('.') + '/'

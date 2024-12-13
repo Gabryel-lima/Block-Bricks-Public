@@ -1,4 +1,4 @@
-from src.est_core.imports import pygame, random
+from .imports import pygame, random
 import numpy as np
 
 class Ball:

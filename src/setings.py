@@ -1,5 +1,4 @@
-
-from src.core.imports import pygame
+from .imports import pygame
 
 class ConfigVars:
     def __init__(self, game_base):
