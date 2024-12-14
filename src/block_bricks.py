@@ -1,8 +1,9 @@
 from .imports import pygame, json, os
 
-from .game_base import GameBase
+from .Game_Base import GameBase
+from .Game_Base import GameBaseNew
 
-from src.utils.utils import scaled_surface_percent, apenda_dot
+from src.utils.gears import scaled_surface_percent, apenda_dot
 
 from .decorators import clock, bool_game_over
 import numpy as np
@@ -171,8 +172,9 @@ class Game(GameBase):
     def layout(self):
         # TODO: Mais a frente eu melhoro isto aqui.
         self.rect_manager.clear_bg_screen()
-        self.draw_manager.desenho_borda()
-        self.draw_manager.botoes_tela_inicial_modos()
+        # self.draw_manager.desenho_borda()
+        # self.draw_manager.botoes_tela_inicial_modos()
+        self.rect_manager.render()
         self.selecao_de_modos_estrutura()
         
         if self.game_init:
@@ -281,3 +283,19 @@ class Game(GameBase):
 
 #     sys.exit(0)
 
+class GameNew(GameBaseNew):
+    def __init__(self):
+        super().__init__()
+        self.clock_game = pygame.time.Clock()
+        self.icon = pygame.image.load(PATH + '/assets/logo.ico').convert_alpha()
+        pygame.display.set_icon(self.icon)
+
+        # Configuração da superfície de renderização
+        self.screen_surface = scaled_surface_percent(self.rect_manager.screen, percentage=10)
+        self.window_size = (self.screen_surface.get_width(), self.screen_surface.get_height())
+
+    def run(self):
+        """
+        Loop principal do jogo, aproveitando os estados definidos no GameBaseNew.
+        """
+        super().run()

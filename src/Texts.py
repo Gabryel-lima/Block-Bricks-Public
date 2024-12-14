@@ -9,7 +9,7 @@ class CustomString: # TODO: Mais a frente vou me aprofundar meelhor nestes conce
             return self.value.upper()
         return self.value
 
-class TextManager(CustomString):
+class Texts(CustomString):
     def __init__(self, game_base, fonts):
         super().__init__(value="")
         self.game_base = game_base
@@ -45,34 +45,4 @@ class TextManager(CustomString):
 
     # def __format__(self, format_spec):
     #     return getattr(self, format_spec, "Unknown text key")
-    
-    def draw_pontuation(self):
-        texto_formatado = self.fonts.font_candara.render(
-            self.game_base.points.init_points, False, (127,127,127))
-        
-        self.game_base.rect_manager.screen.blit(
-            texto_formatado, self.game_base.rect_manager.get_rect("blit_text_points_player1"))
-
-    def draw_best_pontuation(self):
-        texo_formatado = self.fonts.font_candara.render(
-            self.game_base.points.best_pontuation, False, (127,127,127))
-        
-        self.game_base.rect_manager.screen.blit(
-            texo_formatado, self.game_base.rect_manager.get_rect("blit_text_best_points_player1"))
-
-    def draw_level(self):
-        texto_formatado = self.fonts.font_candara.render(
-            self.game_base.points.init_level, False, (127, 127, 127))
-        
-        self.game_base.rect_manager.screen.blit(
-            texto_formatado, self.game_base.rect_manager.get_rect("blit_text_level"))
-
-    def draw_bot_pontuation(self):
-        pass
-
-    def draw_best_bot_pontuation(self):
-        pass
-
-    def draw_bot_level(self):
-        pass
 

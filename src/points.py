@@ -1,18 +1,18 @@
 import json
 
-from .text_manager import TextManager
-from .blocks import Blocks
+from .Texts import Texts
+from .Blocks import Blocks
 # TODO: Estas formas de importações devem ser melhoradas 
 
 class Points:
-    def __init__(self, text_manager: TextManager, blocks: Blocks):
+    def __init__(self, text: Texts, blocks: Blocks):
         """
         Gerenciador de pontos e níveis para o jogador.
 
-        :param text_manager: Referência aos textos do jogo.
+        :param text: Referência aos textos do jogo.
         :param blocks: Referência aos blocos do jogo (para resetar níveis, se necessário).
         """
-        self.text = text_manager
+        self.text = text
         self.blocks = blocks
         self._counter_points: int = 0  # Pontuação inicial
         self._init_level: int = 0  # Nível inicial
@@ -106,4 +106,39 @@ class Points:
         data = {'best_score': best_score}
         with open(file_path, 'w') as file:
             json.dump(data, file)
+
+    def draw_pontuation(self, rect_manager, fonts):
+        """
+        Desenha a pontuação atual na tela.
+        """
+        texto_formatado = fonts.get_fonts_system('arial', 28).render(
+            f"{self.init_points}", False, (127, 127, 127)
+        )
+        rect_manager.screen.blit(
+            texto_formatado, rect_manager.rects["BLIT_TEXT_POINTS"].topleft
+        )
+
+    def draw_best_pontuation(self, rect_manager, fonts):
+        """
+        Desenha a melhor pontuação na tela.
+        """
+        texto_formatado = fonts.get_fonts_system('arial', 28).render(
+            f"{self.best_pontuation}", False, (127, 127, 127)
+        )
+        rect_manager.screen.blit(
+            texto_formatado, rect_manager.rects["BLIT_TEXT_BEST_POINTS"].topleft
+        )
+
+    def draw_level(self, rect_manager, fonts):
+        """
+        Desenha o nível atual na tela.
+        """
+        texto_formatado = fonts.get_fonts_system('arial', 28).render(
+            f"{self.init_level}", False, (127, 127, 127)
+        )
+        rect_manager.screen.blit(
+            texto_formatado, rect_manager.rects["BLIT_TEXT_LEVEL"].topleft
+        )
+
+
 
