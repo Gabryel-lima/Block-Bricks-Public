@@ -9,7 +9,7 @@ from tf_agents.specs import BoundedArraySpec
 from tf_agents.environments.py_environment import PyEnvironment
 from tf_agents.trajectories import time_step as ts
 
-from ..block_bricks import Game
+from ..Block_Bricks import Game
 
 class CustomPyEnvironment(PyEnvironment):
     """

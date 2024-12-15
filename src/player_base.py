@@ -6,22 +6,41 @@ class PlayerBase(ABC):
     Base class for a player in the game.
     
     Attributes:
-        game_base: Reference to the game core.
+        game: Reference to the game core.
         pos_x: Player's horizontal position.
         pos_y: Player's vertical position.
-        width_draw_x: Width of the player's drawable area.
-        height_draw_y: Height of the player's drawable area.
+        width: Width of the player's drawable area.
+        height: Height of the player's drawable area.
         rect: Pygame Rect representing the player's position and size.
         border: The screen's boundary for collision detection.
     """
-    def __init__(self, game_base):
-        self.game_base = game_base
-        self.pos_x = 280
-        self.pos_y = 402
-        self.width_draw_x = 40
-        self.height_draw_y = 1
-        self.rect = pygame.Rect(self.pos_x, self.pos_y, self.width_draw_x, self.height_draw_y)
-        self.border = self.game_base.rect_manager.enum_rects.SCREEN_BORDER
+    def __init__(self, game):
+        """Obs ¬ Estou definindo como valores int, mas poderia ser float como é o padrão da classe pygame.rect.Rect"""
+        self.game = game
+        self._pos_x = 280
+        self._pos_y = 402
+        self._width = 42
+        self._height = 5
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
+        self.border = self.game.rect_manager.enum_rects.SCREEN_BORDER.value
+
+    @property
+    def width(self):
+        """Retuerns the width draw of player Rect."""
+        return self._width
+    
+    @width.setter
+    def width(self, value: int):
+        self.rect.width = value
+
+    @property
+    def height(self):
+        """Retuerns the height draw of player Rect."""
+        return self._height
+    
+    @height.setter
+    def height(self, value: int):
+        self.rect.height = value
 
     @property
     def center_x(self) -> int:
@@ -35,35 +54,37 @@ class PlayerBase(ABC):
     @property
     def x(self) -> int:
         """Returns the player's horizontal position."""
-        return self.pos_x
+        return self._pos_x
 
     @x.setter
     def x(self, value: int):
-        self.pos_x = value
         self.rect.x = value
 
     @property
     def y(self) -> int:
         """Returns the player's vertical position."""
-        return self.pos_y
+        return self._pos_y
 
     @y.setter
     def y(self, value: int):
-        self.pos_y = value
         self.rect.y = value
+
+    def _ball_collision(self):
+        if self.game.ball.rect.colliderect(self.rect):
+            self.game.ball._invert_direction(player=self.rect)
 
     @abstractmethod
     def _player_collision(self):
         """Handles player collision with screen borders."""
-        if self.pos_x - 5 <= self.border.left:
-            self.pos_x = self.border.left + 5
+        if self.x - 5 <= self.border.left:
+            self.x = self.border.left + 5
 
-        if self.pos_x + self.width_draw_x >= self.border.right:
-            self.pos_x = self.border.right - self.width_draw_x
+        if self.x + self.width >= self.border.right:
+            self.x = self.border.right - self.width
 
-        self.rect.x = self.pos_x
+        self.rect.x = self.x
+        self._ball_collision()
 
     def reset(self):
         """Resets the player's position to the center."""
-        self.pos_x = (self.border.width / 2) - (self.width_draw_x / 2)
-        self.rect.x = self.pos_x
+        self.x = (self.border.width / 2) - (self.width / 2)

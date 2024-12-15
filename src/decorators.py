@@ -87,3 +87,4 @@ def bool_game_over(func):
     game_state = 0
     wrapper.bool_game_over = game_over
     return wrapper
+

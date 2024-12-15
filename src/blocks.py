@@ -2,8 +2,8 @@ from .imports import pygame
 
 
 class Blocks:
-    def __init__(self, game_base):
-        self.game_base = game_base
+    def __init__(self, game):
+        self.game = game
         self._width = 57
         self._heigth = 20
         self.color = (150, 80, 35)
@@ -78,15 +78,15 @@ class Blocks:
     def draw(self):
         #self.rand_color = np.random.randint(10, 255, size=3) # Colocando a instância aqui só para ficar engraçado kkkk
         for bloco in self.lis_blocks:
-            pygame.draw.rect(self.game_base.rect_manager.screen, self.color, bloco, width=0, border_radius=3)
+            pygame.draw.rect(self.game.rect_manager.screen, self.color, bloco, width=0, border_radius=3)
             
     def animated_rect_collision(self, index: int):
         for idx, block in enumerate(self.lis_blocks):
             if idx == index:
                 new_block = block.copy()
                 new_block.inflate_ip(1.0, 1.3)
-                pygame.draw.rect(self.game_base.rect_manager.screen, self.color_animated, new_block, width=0, border_radius=3)
-                pygame.draw.rect(self.game_base.rect_manager.screen, self.color_animated_none, new_block, width=5, border_radius=2)
+                pygame.draw.rect(self.game.rect_manager.screen, self.color_animated, new_block, width=0, border_radius=3)
+                pygame.draw.rect(self.game.rect_manager.screen, self.color_animated_none, new_block, width=5, border_radius=2)
 
     def reset(self):
         self.lis_blocks.clear()

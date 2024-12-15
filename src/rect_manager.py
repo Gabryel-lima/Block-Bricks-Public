@@ -38,8 +38,8 @@ class EnumRects(Enum):
     BLIT_TEXT_BACK = (40, 300, 0, 0)
 
     # Rects durante o jogo
-    BLIT_TEXT_LEVEL = (40, 480, 0, 0)
-    BLIT_TEXT_POINTS = (40, 430, 0, 0)
+    BLIT_TEXT_LEVEL = (40, 430, 0, 0)
+    BLIT_TEXT_POINTS = (40, 480, 0, 0)
     BLIT_TEXT_BEST_POINTS = (40, 530, 0, 0)
     
     # Estes são dois rects que vão se usar a mesma posição
@@ -101,7 +101,6 @@ class InitialScreenGroup:
     def __init__(self, rect_manager, fonts):
         self.rect_manager = rect_manager
         self.fonts = fonts
-        # self.text = text
 
     def animate(self):
         pos_mouse = pygame.mouse.get_pos()
@@ -147,13 +146,13 @@ class InitialScreenGroup:
         self.animate()
 
 class RectManager:
-    def __init__(self, fonts):
+    def __init__(self, game, fonts):
         self.enum_rects = EnumRects
         self.rects = {key: key.to_rect() for key in EnumRects}
         self.screen = None
         self.groups = {}
+        self.game = game
         self.fonts = fonts
-        # self.text = text
 
         self.set_screen_dimensions(width=608, height=608, bg_color=(0, 0, 0))
         self.groups['initial_screen'] = InitialScreenGroup(self, self.fonts)
@@ -176,11 +175,16 @@ class RectManager:
             border_rect = self.enum_rects.SCREEN_BORDER.value
             pygame.draw.rect(self.screen, color, border_rect, thickness)
 
+    def _fun_menu(self):
+        self.game.ball.menu_animation()
+        #self.game.bot.draw_bot()
+
     def render_init(self):
         self.clear_bg_screen()
         self.draw_border()
-        for group in self.groups.values():
-            group.draw()
+        self._fun_menu()
+        self.groups['initial_screen'].draw()
+        pygame.display.update()
 
     def render_pre_runing(self):
         self.clear_bg_screen()

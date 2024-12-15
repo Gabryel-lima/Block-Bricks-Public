@@ -24,7 +24,7 @@ class Points:
 
     @property
     def init_points(self) -> str:
-        return f'{self.text.str_points}{self._counter_points}'
+        return f'{self.text.str_points} {self._counter_points}'
 
     @init_points.setter
     def init_points(self, value: int):
@@ -34,11 +34,11 @@ class Points:
 
     @property
     def best_pontuation(self) -> str:
-        return f'{self.text.str_best_points}{self.loading_points}'
+        return f'{self.text.str_best_points} {self.loading_points}'
 
     @property
     def init_level(self) -> str:
-        return f'{self.text.str_level}{self._init_level + 1}'
+        return f'{self.text.str_level} {self._init_level + 1}'
 
     # ------------------ Gerenciamento de Pontuações ------------------
 
@@ -115,7 +115,7 @@ class Points:
             f"{self.init_points}", False, (127, 127, 127)
         )
         rect_manager.screen.blit(
-            texto_formatado, rect_manager.rects["BLIT_TEXT_POINTS"].topleft
+            texto_formatado, rect_manager.enum_rects.BLIT_TEXT_POINTS.value
         )
 
     def draw_best_pontuation(self, rect_manager, fonts):
@@ -126,7 +126,7 @@ class Points:
             f"{self.best_pontuation}", False, (127, 127, 127)
         )
         rect_manager.screen.blit(
-            texto_formatado, rect_manager.rects["BLIT_TEXT_BEST_POINTS"].topleft
+            texto_formatado, rect_manager.enum_rects.BLIT_TEXT_BEST_POINTS.value
         )
 
     def draw_level(self, rect_manager, fonts):
@@ -137,7 +137,7 @@ class Points:
             f"{self.init_level}", False, (127, 127, 127)
         )
         rect_manager.screen.blit(
-            texto_formatado, rect_manager.rects["BLIT_TEXT_LEVEL"].topleft
+            texto_formatado, rect_manager.enum_rects.BLIT_TEXT_LEVEL.value
         )
 
 
