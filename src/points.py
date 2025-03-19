@@ -1,7 +1,7 @@
 import json
 
-from .Texts import Texts
-from .Blocks import Blocks
+from src.Texts import Texts
+from src.blocks import Blocks
 # TODO: Estas formas de importações devem ser melhoradas 
 
 class Points:

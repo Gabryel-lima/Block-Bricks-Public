@@ -1,11 +1,7 @@
-import pygame.draw_py
-from .imports import pygame
-
-from .imports import pygame, os
+from src.imports import pygame, os
 from typing_extensions import Union
 
 from enum import Enum
-
 
 class Style:
     COLORS = {

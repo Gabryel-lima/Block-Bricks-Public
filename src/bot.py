@@ -5,10 +5,10 @@ os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'  # Desativa as operações customizada
 import tensorflow as tf
 tf.get_logger().setLevel('ERROR')  # Desativa mensagens de log do TensorFlow
 
-from .imports import pygame
+from src.imports import pygame
 import numpy as np
 import keras
-from .Player_Base import PlayerBase
+from src.player_base import PlayerBase
 
 class Bot(PlayerBase):
     def __init__(self, game):
@@ -41,8 +41,8 @@ class Bot(PlayerBase):
             self.model = None
     
     def draw_bot(self):
-        pygame.draw.rect(self.game.rect_manager.screen, (20, 155, 40),
-                         (self.x, self.x, self.x, self.height_draw_y))
+        pygame.draw.rect(self.game.rect_manager.screen, (20, 155, 40), 
+                        (self.x, self.x, self.x, self.height_draw_y))
         
     def reset_bot(self):
         self.pos_x = self.border.width / 2

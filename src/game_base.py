@@ -1,17 +1,17 @@
-from .imports import pygame, json, webbrowser
+from src.imports import pygame, json, webbrowser
 
-from .Setings import ConfigVars
-from .Event_Handler import EventHandler
-from .Player import Player
-from .Player2 import Player2
-from .Bot import Bot
-from .Ball import Ball
-from .Blocks import Blocks
-from .Fonts import Fonts
-from .Rect_Manager import RectManager #, ConfigButton
-from .Texts import Texts
-from .Points import Points
-from .utils.color import Color
+from src.settings import ConfigVars
+from src.Event_Handler import EventHandler
+from src.player import Player
+from src.player2 import Player2
+from src.bot import Bot
+from src.ball import Ball
+from src.blocks import Blocks
+from src.fonts import Fonts
+from src.rect_manager import RectManager #, ConfigButton
+from src.Texts import Texts
+from src.points import Points
+from src.utils.color import Color
 
 from collections.abc import Callable
 

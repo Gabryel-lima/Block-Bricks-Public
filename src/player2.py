@@ -1,5 +1,5 @@
-from .imports import pygame
-from .Player_Base import PlayerBase
+from src.imports import pygame
+from src.player_base import PlayerBase
 
 class Player2(PlayerBase):
     def __init__(self, game):

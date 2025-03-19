@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from .imports import pygame
+from src.imports import pygame
 
 class PlayerBase(ABC):
     """

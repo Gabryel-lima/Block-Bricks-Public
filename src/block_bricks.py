@@ -1,13 +1,10 @@
-from .imports import pygame, json, os
-
-from .Game_Base import GameBase
+from src.imports import pygame, json, os
+from src.game_base import GameBase
 
 from src.utils.gears import scaled_surface_percent, apenda_dot
+from src.decorators import clock, bool_game_over
 
-from .decorators import clock, bool_game_over
-import numpy as np
-
-from .paths import PATH
+from src.paths import PATH
 
 
 class Game(GameBase):
