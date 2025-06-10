@@ -1,4 +1,5 @@
 from src.imports import pygame, json, os
+import numpy as np
 from src.game_base import GameBase
 
 from src.utils.gears import scaled_surface_percent, apenda_dot
@@ -20,7 +21,17 @@ class Game(GameBase):
         # TODO: Melhorar este carinhas aqui em baixo ...
         self.channels = 3
         self.screen_surface = scaled_surface_percent(self.rect_manager.screen, percentage=10)
-        self.window_size = (self.screen_surface.get_width(), self.screen_surface.get_height())
+        self.window_size = (
+            self.screen_surface.get_width(),
+            self.screen_surface.get_height(),
+        )
+
+        # Useful references for the RL environment
+        self.screen = self.rect_manager.screen
+        self.width = self.screen.get_width()
+        self.height = self.screen.get_height()
+        self.relative_height_ball = self.ball.relative_ball_pos
+        self.current_game = 0
 
     def run(self):
         """
@@ -28,6 +39,33 @@ class Game(GameBase):
         """
         #self.update_caption_with_fps()
         super().run()
+
+    def reset_env(self):
+        """Reset game state for the reinforcement learning environment."""
+        self.rect_manager.clear_bg_screen()
+        self.ball.reset()
+        self.blocks.reset()
+        self.player.reset()
+        self.player2.reset()
+        self.bot.reset_bot()
+        self.ball.start_movement()
+        self.points.reset_points_and_levels()
+
+    def render_frame(self):
+        """Render the current state and return an observation array."""
+        self.rect_manager.clear_bg_screen()
+        self.rect_manager.draw_border()
+        self.blocks.draw()
+        self.ball.draw()
+        self.bot._player_collision()
+        self.bot.draw_bot()
+        self.ball.update(is_menu=False)
+
+        frame_surface = pygame.transform.scale(
+            self.rect_manager.screen, self.window_size
+        )
+        self.screen_surface = frame_surface
+        return np.array(pygame.surfarray.array3d(frame_surface), dtype=np.float32)
 
     # def update_caption_with_fps(self):
     #     # Obtém o FPS atual e atualiza o título da janela
