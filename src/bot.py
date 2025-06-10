@@ -41,24 +41,27 @@ class Bot(PlayerBase):
             self.model = None
     
     def draw_bot(self):
-        pygame.draw.rect(self.game.rect_manager.screen, (20, 155, 40), 
-                        (self.x, self.x, self.x, self.height_draw_y))
+        pygame.draw.rect(
+            self.game.rect_manager.screen,
+            (20, 155, 40),
+            (self.x, self.y, self.width, self.height)
+        )
         
     def reset_bot(self):
-        self.pos_x = self.border.width / 2
+        self.x = self.border.width / 2
     
     def move_left(self):
-        self.pos_x -= 5.0
+        self.x -= 5.0
     
     def move_right(self):
-        self.pos_x += 5.0
+        self.x += 5.0
     
     def fine_adjustment(self, distance_to_ball):
         if abs(distance_to_ball) < 30:
             if distance_to_ball < 0:
-                self.pos_x -= 3.0
+                self.x -= 3.0
             elif distance_to_ball > 0:
-                self.pos_x += 3.0
+                self.x += 3.0
     
     def update(self):
         # Obtém a observação atual do estado do jogo
