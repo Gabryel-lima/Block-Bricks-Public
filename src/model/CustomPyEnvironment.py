@@ -155,8 +155,8 @@ class CustomPyEnvironment(PyEnvironment):
             reward -= 0.0003 * abs(distance_to_ball)
 
         counter = 0 # TODO Tá meio estranho isso aqui ainda
-        previous_len = len(self.game.blocks.lis_blocos)
-        if len(self.game.blocks.lis_blocos) == previous_len:
+        previous_len = len(self.game.blocks.lis_blocks)
+        if len(self.game.blocks.lis_blocks) == previous_len:
             counter += 1
         else:
             counter = 0
@@ -169,7 +169,7 @@ class CustomPyEnvironment(PyEnvironment):
             done = True
 
         # Recompensa por destruir todos os blocos
-        if len(self.game.blocks.lis_blocos) == 0:
+        if len(self.game.blocks.lis_blocks) == 0:
             reward += 15
             self.game.reset_env()
             pygame.time.wait(200)
@@ -180,12 +180,12 @@ class CustomPyEnvironment(PyEnvironment):
             reward += 10.0
 
         # Recompensa adicional por destruir blocos
-        for block in self.game.blocks.lis_blocos:
+        for block in self.game.blocks.lis_blocks:
             if self.game.ball.rect.colliderect(block):
-                reward += 0.5 + (5 - len(self.game.blocks.lis_blocos)) * 0.2  # Quanto menos blocos, mais recompensa
+                reward += 0.5 + (5 - len(self.game.blocks.lis_blocks)) * 0.2  # Quanto menos blocos, mais recompensa
 
         # Penalidade e finalização do jogo se a bola cair no chão
-        if self.game.ball.y + self.game.ball.raio >= self.game.height - self.game.relative_height_ball:
+        if self.game.ball.y + self.game.ball.raio >= self.game.rect_manager.screen.get_height() - self.game.ball.relative_ball_pos:
             reward -= 10.0
             self.game.reset_env()
             pygame.time.wait(200)
