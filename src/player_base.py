@@ -58,6 +58,7 @@ class PlayerBase(ABC):
 
     @x.setter
     def x(self, value: int):
+        self._pos_x = value
         self.rect.x = value
 
     @property
@@ -67,6 +68,7 @@ class PlayerBase(ABC):
 
     @y.setter
     def y(self, value: int):
+        self._pos_y = value
         self.rect.y = value
 
     def _ball_collision(self):
