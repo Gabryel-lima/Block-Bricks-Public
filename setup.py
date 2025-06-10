@@ -14,8 +14,7 @@ setup(
     install_requires=[
         "tensorflow>=2.0",
         "pygame-ce",
-        "numpy",
-        ""
+        "numpy"
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
