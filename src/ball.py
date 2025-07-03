@@ -55,7 +55,7 @@ class Ball:
     def draw(self, color=None, raio=None):
         color = color if color is not None else self.rand_color
         raio = raio if raio is not None else self.raio
-        pygame.draw.circle(self.rect_manager.screen, color, self.rect.center, raio)
+        pygame.draw.circle(self.rect_manager.screen, color, (self.x, self.y), raio)
 
     def update(self, max_velocity=4.8):
         # Limita a velocidade
