@@ -1,12 +1,12 @@
 import pygame
-from game_base import GameBase
-from rect_manager import RectManager
-from player import Player
-from player2 import Player2
-from bot import Bot
-from ball import Ball
-from blocks import Blocks
-from points import Points
+from src.game_base import GameBase
+from src.rect_manager import RectManager
+from src.player import Player
+from src.player2 import Player2
+from src.bot import Bot
+from src.ball import Ball
+from src.blocks import Blocks
+from src.points import Points
 
 class BlockBricks(GameBase):
     def __init__(self):
@@ -90,7 +90,7 @@ class BlockBricks(GameBase):
                 self.points.update_level()
             # Game over (bola caiu)
             if self.ball.y + self.ball.raio >= self.rect_manager.height - self.ball.relative_ball_pos:
-                self.current_state = 'menu'
+                self.current_state = 'pre_runing'
                 self.ball.reset()
                 self.player.reset()
                 self.player2.reset()
@@ -126,8 +126,3 @@ class BlockBricks(GameBase):
         self.player2.reset()
         self.bot.reset_bot()
         self.points.reset_points_and_levels()
-
-if __name__ == '__main__':
-    game = BlockBricks()
-    game.run()
-    

@@ -1,5 +1,5 @@
 import pygame
-from player_base import PlayerBase
+from src.player_base import PlayerBase
 
 class Bot(PlayerBase):
     def __init__(self, rect_manager):

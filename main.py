@@ -1,14 +1,15 @@
 from __future__ import annotations # Evita erro de dupla importação, só para garantir.
-from src.block_bricks import Game
+#from depreciated.src.block_bricks import Game
+from src.Block_Bricks import BlockBricks
 
 def main_bot_train():
-    jogo = Game()
+    jogo = BlockBricks()
     jogo.run()
 
 def cprfi():
 
     def mainProfile():
-        Game()
+        BlockBricks()
 
     import cProfile
     import pstats
@@ -26,7 +27,7 @@ def cprfi():
 
 
 def main():
-    jogo = Game()
+    jogo = BlockBricks()
     jogo.run()
 
 
