@@ -1,5 +1,5 @@
 
-from src.core.imports import pygame
+import pygame
 
 from src.core.player_base import PlayerBase
 

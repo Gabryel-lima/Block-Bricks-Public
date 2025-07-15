@@ -1,11 +1,12 @@
-import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Desativa mensagens de aviso do TensorFlow
-os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'  # Desativa as operações customizadas do oneDNN para evitar mensagens de aviso
+# import os
+# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Desativa mensagens de aviso do TensorFlow
+# os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'  # Desativa as operações customizadas do oneDNN para evitar mensagens de aviso
 
-import tensorflow as tf
-tf.get_logger().setLevel('ERROR')  # Desativa mensagens de log do TensorFlow
+# import tensorflow as tf
+# tf.get_logger().setLevel('ERROR')  # Desativa mensagens de log do TensorFlow
 
-from src.core.imports import pygame, keras
+# import pygame, keras
+import pygame
 import numpy as np
 
 class Bot:

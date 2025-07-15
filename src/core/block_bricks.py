@@ -1,4 +1,4 @@
-from src.core.imports import pygame, json, random, os
+import pygame, json, random, os
 from enum import Enum
 
 from src.core.game_base import GameBase

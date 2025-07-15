@@ -1,5 +1,5 @@
 
-from src.core.imports import pygame, os
+import pygame, os
 from typing_extensions import Union
 
 PATH = os.path.abspath('.') + '/'

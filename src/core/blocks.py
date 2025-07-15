@@ -1,5 +1,5 @@
 
-from src.core.imports import pygame
+import pygame
 import numpy as np
 
 class Blocks:

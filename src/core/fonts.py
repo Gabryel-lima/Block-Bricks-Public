@@ -1,5 +1,5 @@
 
-from src.core.imports import pygame
+import pygame
 
 class Fonts:
     def __init__(self):

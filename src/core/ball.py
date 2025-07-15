@@ -1,5 +1,5 @@
 
-from src.core.imports import pygame, random
+import pygame, random
 #from src.data.coleta_dados import ColetaDados
 import numpy as np
 

@@ -1,5 +1,5 @@
 
-from src.core.imports import pygame, json, webbrowser
+import pygame, json, webbrowser
 
 
 from src.core.setings import ConfigVars
